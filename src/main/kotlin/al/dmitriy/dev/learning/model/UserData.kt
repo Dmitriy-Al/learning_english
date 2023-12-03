@@ -1,6 +1,5 @@
 package al.dmitriy.dev.learning.model
 
-import al.dmitriy.dev.learning.lesson.Lessons
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -10,15 +9,13 @@ open class UserData : Cloneable {
 
 
     @Id
-    open var stringChatId: Long = 0
+    @Column(name = "string_chat_id")
+    open var chatId: Long = 0
 
     open var username: String =  ""
 
     @Column(name = "user_firstname")
     open var userFirstname: String =  ""
-
-    //@Column(name = "users_words", columnDefinition = "text")
-    //open var usersWords: String? = null
 
     @Column(name = "various_words", columnDefinition = "text")
     open var variousWords: String = ""

@@ -1,9 +1,9 @@
 package al.dmitriy.dev.learning.service
 
-import al.dmitriy.dev.learning.lesson.LessonUnit
+import al.dmitriy.dev.learning.extendfunctions.putData
+import al.dmitriy.dev.learning.dataunit.LessonUnit
 import al.dmitriy.dev.learning.lesson.Lessons
 import al.dmitriy.dev.learning.model.UserData
-import al.dmitriy.dev.learning.overrideFunctions.putData
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
@@ -127,7 +127,7 @@ class BotMenuFunction : BotMenuInterface {
             Lessons.VARIOUS_WORDS.title -> userData.variousWords += lessonText
             Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot += lessonText
             Lessons.DATE_AND_TIME.title -> userData.dateAndTime += lessonText
-            "Учить новые слова" -> userData.wordsForLearning += lessonText
+            "WFL" -> userData.wordsForLearning += lessonText
         }
         return userData
     }
@@ -231,8 +231,6 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 
     fun receiveLessonTextFromDb(lessonCategory: String, userData: UserData): String{
         var userLessonText = ""
@@ -247,21 +245,22 @@ class BotMenuFunction : BotMenuInterface {
             Lessons.PASSIVE_VOICE.title -> userLessonText = userData.passiveVoice
             Lessons.MUCH_MANY_LOT.title -> userLessonText = userData.muchManyLot
             Lessons.DATE_AND_TIME.title -> userLessonText = userData.dateAndTime
-            "Учить новые слова" -> userLessonText = userData.wordsForLearning
+            "WFL" -> userLessonText = userData.wordsForLearning
         }
         return userLessonText
     }
 
 
-    fun createButtonMenuForDelete(textForButton: List<String>, calBackData: String): InlineKeyboardMarkup {
+    fun createButtonMenuForDelete(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
 
         for (i in textForButton.indices) {
-            val buttonText = "$i. " + textForButton[i].replace("*", " ◂▸ ")
+            val number = i + 1
+            val buttonText = "$number. " + textForButton[i].replace("*", " ◂▸ ")
             val button = InlineKeyboardButton()
             button.text = buttonText
-            button.callbackData = "$i@$calBackData"
+            button.callbackData = "$i@$callBackData"
 
             val rowInlineButton = ArrayList<InlineKeyboardButton>()
             rowInlineButton.add(button)
@@ -270,7 +269,7 @@ class BotMenuFunction : BotMenuInterface {
 
         val delAllButton = InlineKeyboardButton()
         delAllButton.text = "⭕  Удалить все тексты"
-        delAllButton.callbackData = "-1@$calBackData"
+        delAllButton.callbackData = "-1@$callBackData"
 
         val rowInlineButton = ArrayList<InlineKeyboardButton>()
         rowInlineButton.add(delAllButton)
@@ -291,29 +290,91 @@ class BotMenuFunction : BotMenuInterface {
             Lessons.PASSIVE_VOICE.title -> userData.passiveVoice = lessonText
             Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot = lessonText
             Lessons.DATE_AND_TIME.title -> userData.dateAndTime = lessonText
-            "Учить новые слова" -> userData.wordsForLearning = lessonText
+            "WFL" -> userData.wordsForLearning = lessonText // TODO
         }
     }
 
 
-/*
+    fun receiveCategoryMenu(chatId: String, messageId: Int, callbackData: String, messageText: String, categories: List<String>): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.chatId = chatId
+        editMessageText.messageId = messageId
+        editMessageText.text = messageText
+        editMessageText.replyMarkup = createDataButtonMenu(categories, callbackData)
+        return editMessageText
+    }
 
-    override fun createButtonMenu(textForButton: List<String>): InlineKeyboardMarkup {
+
+    fun receiveLearnWordMenu(chatId: String, messageId: Int, messageText: String): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.chatId = chatId
+        editMessageText.messageId = messageId
+        editMessageText.text = messageText
+
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val fourthRowInlineButton = ArrayList<InlineKeyboardButton>()
 
-        for (element in textForButton) {
-            val rowInlineButton = ArrayList<InlineKeyboardButton>()
-            val button = InlineKeyboardButton()
-            button.text = element
-            button.callbackData = element
-            rowInlineButton.add(button)
-            rowsInline.add(rowInlineButton)
-        }
+        val trainingButton = InlineKeyboardButton()
+        trainingButton.putData("\uD83C\uDD8E  Тренировка", "#tran")  // 🔤
+        firstRowInlineButton.add(trainingButton)
+
+        val myWordsButton = InlineKeyboardButton()
+        myWordsButton.putData("\uD83D\uDEAE  Убрать слово из изучаемых", "#todelWFL")
+        secondRowInlineButton.add(myWordsButton)
+
+        val learnWordButton = InlineKeyboardButton()
+        learnWordButton.putData("\uD83D\uDD24  Добавить слово на изучение", "#addWFL")
+        thirdRowInlineButton.add(learnWordButton)
+
+        val fourthButton = InlineKeyboardButton()
+        fourthButton.putData("\uD83D\uDCDC  Список изучаемых слов", "#showWFL")
+        fourthRowInlineButton.add(fourthButton)
+
+        rowsInline.add(firstRowInlineButton)
+        rowsInline.add(secondRowInlineButton)
+        rowsInline.add(thirdRowInlineButton)
+        rowsInline.add(fourthRowInlineButton)
+
         inlineKeyboardMarkup.keyboard = rowsInline
-        return inlineKeyboardMarkup
+        editMessageText.replyMarkup = inlineKeyboardMarkup
+        return editMessageText
     }
- */
+
+
+
+// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+
+
+
+
+
+    /*
+
+        override fun createButtonMenu(textForButton: List<String>): InlineKeyboardMarkup {
+            val inlineKeyboardMarkup = InlineKeyboardMarkup()
+            val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+
+            for (element in textForButton) {
+                val rowInlineButton = ArrayList<InlineKeyboardButton>()
+                val button = InlineKeyboardButton()
+                button.text = element
+                button.callbackData = element
+                rowInlineButton.add(button)
+                rowsInline.add(rowInlineButton)
+            }
+            inlineKeyboardMarkup.keyboard = rowsInline
+            return inlineKeyboardMarkup
+        }
+     */
 
 
 

@@ -4,8 +4,8 @@ enum class Lessons(val title: String, private val lesson: List<String>) {
 
   PRESENT_SIMPLE("Present Simple, спряжение глаголов", presentSimple),
   PRESENT_CONTINUOUS("Present Continuous, состояния", presentContinuous),
-  PRONOUN_PREPOSITION("Pronoun and preposition", pronounAndPreposition),
   PASSIVE_VOICE("Passive Voice, пассивный залог", passiveVoice),
+  PRONOUN_PREPOSITION("Pronoun and preposition", pronounPreposition),
   PRESENT_SENTENCE("Present Sentence", perfectSentence),
   DATE_AND_TIME("Дата и время", dateAndTime),
   MUCH_MANY_LOT("Множества", muchManyLot),
@@ -43,5 +43,5 @@ private val presentSimple = listOf("Тёмный, мрачный коридор,
     "За столом сидели мужики и ели*the peasants were sitting at the table and eating", "Дремлет за горой мрачный замок мой*my gloomy castle sleeps behind the mountain")
 private val perfectSentence = listOf("Я видел его*I had seen him", "Я видел его*I had seen him", "Вечером я встречу его*by evening i will have met him")
 private val presentContinuous = listOf("Ты бледный*You are pale", "Лондон столица Великобритании*London is the capital of Great Britain", "Я иду домой*I am going home")
-private val pronounAndPreposition = listOf("Папа был зол на нас*dad was angry wit us", "Я хочу, чтобы ты пошёл*I want you to go", "Я хочу, чтобы ты пошёл*I want you to go")
-private val variousWords = listOf("Я не знаю ничего*I don't know nothing", "Я не знаю*I don't know", "как собака*like a dog")
+private val pronounPreposition = listOf("Папа был зол на нас*dad was angry wit us", "Я хочу, чтобы ты пошёл*I want you to go", "Я хочу, чтобы ты пошёл*I want you to go")
+private val variousWords = listOf("Я не знаю ничего*I know nothing", "Я не знаю*I don't know", "как собака*like a dog")
