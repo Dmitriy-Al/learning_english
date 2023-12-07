@@ -29,10 +29,6 @@ enum class Lessons(val title: String, private val lesson: List<String>) {
       } else list // return
   }
 
-
-    val randomWords = listOf("I", "You", "he", "she", "they", "him", "her", "it", "them", "mine", "its", "our", "itself", "myself", "herself", "yourselves", "themselves", "ourselves", "himself", "those", "these",
-        "that", "what", "which", "whose", "who", "whom", "me", "at", "is", "to", "am", "go", "for", "in", "us")
-
 }
 
 private val dateAndTime = listOf("Пять часов*the five o'clock", "3 июня*the third of July", "Пять часов*the five o'clock", "В понедельник*on Monday")

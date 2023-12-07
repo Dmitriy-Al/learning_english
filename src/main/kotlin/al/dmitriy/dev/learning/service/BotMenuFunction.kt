@@ -5,14 +5,15 @@ import al.dmitriy.dev.learning.dataunit.LessonUnit
 import al.dmitriy.dev.learning.lesson.Lessons
 import al.dmitriy.dev.learning.model.UserData
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 
 class BotMenuFunction : BotMenuInterface {
-
 
 
     fun setKeyBoard(sendMessage: SendMessage) {
@@ -31,17 +32,17 @@ class BotMenuFunction : BotMenuInterface {
         val sendMessage = SendMessage()
         sendMessage.setChatId(chatId)
         sendMessage.text = messageText
-        sendMessage.replyMarkup = createButtonMenu(categories)// createDataButtonMenu(categories, "$categories#")
+        sendMessage.replyMarkup = createButtonMenu(categories)
         return sendMessage
     }
 
 
-    fun categoryMenu(chatId: String, messageId: Int, messageText: String, categories: List<String>): EditMessageText {
+    fun receiveButtonEditMessage(chatId: String, messageId: Int, messageText: String, callBackData: String, buttonTexts: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.chatId = chatId
         editMessageText.messageId = messageId
         editMessageText.text = messageText
-        editMessageText.replyMarkup = createButtonMenu(categories)
+        editMessageText.replyMarkup = createDataButtonMenu(buttonTexts, callBackData)
         return editMessageText
     }
 
@@ -115,22 +116,6 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
-    fun updateLessonTextInDb(lessonText: String, lessonCategory: String, userData: UserData): UserData{
-        when(lessonCategory){
-            Lessons.PRONOUN_PREPOSITION.title ->  userData.pronounAndPreposition += lessonText
-            Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous += lessonText
-            Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence += lessonText
-            Lessons.PRESENT_SIMPLE.title -> userData.presentSimple += lessonText
-            Lessons.PASSIVE_VOICE.title -> userData.passiveVoice += lessonText
-            Lessons.COMPARE_WORDS.title -> userData.compareWords += lessonText
-            Lessons.VARIOUS_WORDS.title -> userData.variousWords += lessonText
-            Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot += lessonText
-            Lessons.DATE_AND_TIME.title -> userData.dateAndTime += lessonText
-            "WFL" -> userData.wordsForLearning += lessonText
-        }
-        return userData
-    }
 
 
     fun createLessonButtonMenu(chatId: String, messageId: Int, lessonUnit: LessonUnit, dataText: String): EditMessageText {
@@ -232,24 +217,6 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
-    fun receiveLessonTextFromDb(lessonCategory: String, userData: UserData): String{
-        var userLessonText = ""
-
-        when(lessonCategory){
-            Lessons.PRONOUN_PREPOSITION.title -> userLessonText = userData.pronounAndPreposition
-            Lessons.PRESENT_CONTINUOUS.title -> userLessonText = userData.presentContinuous
-            Lessons.PRESENT_SENTENCE.title -> userLessonText = userData.perfectSentence
-            Lessons.PRESENT_SIMPLE.title -> userLessonText = userData.presentSimple
-            Lessons.COMPARE_WORDS.title -> userLessonText = userData.compareWords
-            Lessons.VARIOUS_WORDS.title -> userLessonText = userData.variousWords
-            Lessons.PASSIVE_VOICE.title -> userLessonText = userData.passiveVoice
-            Lessons.MUCH_MANY_LOT.title -> userLessonText = userData.muchManyLot
-            Lessons.DATE_AND_TIME.title -> userLessonText = userData.dateAndTime
-            "WFL" -> userLessonText = userData.wordsForLearning
-        }
-        return userLessonText
-    }
-
 
     fun createButtonMenuForDelete(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
@@ -270,28 +237,19 @@ class BotMenuFunction : BotMenuInterface {
         val delAllButton = InlineKeyboardButton()
         delAllButton.text = "⭕  Удалить все тексты"
         delAllButton.callbackData = "-1@$callBackData"
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        firstRowInlineButton.add(delAllButton)
+        rowsInline.add(firstRowInlineButton)
 
-        val rowInlineButton = ArrayList<InlineKeyboardButton>()
-        rowInlineButton.add(delAllButton)
-        rowsInline.add(rowInlineButton)
+        val backButton = InlineKeyboardButton()
+        backButton.text = "\uD83D\uDD19  Назад"
+        backButton.callbackData = "#own"
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+        secondRowInlineButton.add(backButton)
+        rowsInline.add(secondRowInlineButton)
 
         inlineKeyboardMarkup.keyboard = rowsInline
         return inlineKeyboardMarkup
-    }
-
-    fun removeLessonTextFromDb(lessonCategory: String, userData: UserData, lessonText: String) {
-        when(lessonCategory){
-            Lessons.PRONOUN_PREPOSITION.title -> userData.pronounAndPreposition = lessonText
-            Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous = lessonText
-            Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence = lessonText
-            Lessons.PRESENT_SIMPLE.title -> userData.presentSimple = lessonText
-            Lessons.COMPARE_WORDS.title -> userData.compareWords = lessonText
-            Lessons.VARIOUS_WORDS.title -> userData.variousWords = lessonText
-            Lessons.PASSIVE_VOICE.title -> userData.passiveVoice = lessonText
-            Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot = lessonText
-            Lessons.DATE_AND_TIME.title -> userData.dateAndTime = lessonText
-            "WFL" -> userData.wordsForLearning = lessonText // TODO
-        }
     }
 
 
@@ -319,7 +277,7 @@ class BotMenuFunction : BotMenuInterface {
         val fourthRowInlineButton = ArrayList<InlineKeyboardButton>()
 
         val trainingButton = InlineKeyboardButton()
-        trainingButton.putData("\uD83C\uDD8E  Тренировка", "#tran")  // 🔤
+        trainingButton.putData("\uD83C\uDD8E  Тренировка", "#tran")
         firstRowInlineButton.add(trainingButton)
 
         val myWordsButton = InlineKeyboardButton()
@@ -345,8 +303,134 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
+    fun receiveBillboard(stringChatId: String, messageText: String, url: String): SendPhoto{
+        val sendPhoto = SendPhoto()
+        sendPhoto.chatId = stringChatId
+        // sendPhoto.caption = messageText
+        sendPhoto.photo = InputFile(url)
 
-// TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        val replyKeyboardMarkup = ReplyKeyboardMarkup()
+        replyKeyboardMarkup.resizeKeyboard = true
+        val firstRow = KeyboardRow()
+        firstRow.add("\uD83D\uDCDA Уроки")
+        firstRow.add("Настройки ⚙")
+        val keyboardRows: List<KeyboardRow> = listOf(firstRow)
+        replyKeyboardMarkup.keyboard = keyboardRows
+        sendPhoto.replyMarkup = replyKeyboardMarkup
+        return sendPhoto
+    }
+
+
+    fun removeLessonTextFromDb(lessonCategory: String, userData: UserData, lessonText: String) {
+        when(lessonCategory){
+            Lessons.PRONOUN_PREPOSITION.title -> userData.pronounAndPreposition = lessonText
+            Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous = lessonText
+            Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence = lessonText
+            Lessons.PRESENT_SIMPLE.title -> userData.presentSimple = lessonText
+            Lessons.COMPARE_WORDS.title -> userData.compareWords = lessonText
+            Lessons.VARIOUS_WORDS.title -> userData.variousWords = lessonText
+            Lessons.PASSIVE_VOICE.title -> userData.passiveVoice = lessonText
+            Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot = lessonText
+            Lessons.DATE_AND_TIME.title -> userData.dateAndTime = lessonText
+            "WFL" -> userData.wordsForLearning = lessonText // TODO
+        }
+    }
+
+
+    fun receiveLessonTextFromDb(lessonCategory: String, userData: UserData): String{
+        var userLessonText = ""
+
+        when(lessonCategory){
+            Lessons.PRONOUN_PREPOSITION.title -> userLessonText = userData.pronounAndPreposition
+            Lessons.PRESENT_CONTINUOUS.title -> userLessonText = userData.presentContinuous
+            Lessons.PRESENT_SENTENCE.title -> userLessonText = userData.perfectSentence
+            Lessons.PRESENT_SIMPLE.title -> userLessonText = userData.presentSimple
+            Lessons.COMPARE_WORDS.title -> userLessonText = userData.compareWords
+            Lessons.VARIOUS_WORDS.title -> userLessonText = userData.variousWords
+            Lessons.PASSIVE_VOICE.title -> userLessonText = userData.passiveVoice
+            Lessons.MUCH_MANY_LOT.title -> userLessonText = userData.muchManyLot
+            Lessons.DATE_AND_TIME.title -> userLessonText = userData.dateAndTime
+            "WFL" -> userLessonText = userData.wordsForLearning
+        }
+        return userLessonText
+    }
+
+
+    fun updateLessonTextInDb(lessonText: String, lessonCategory: String, userData: UserData): UserData{
+        when(lessonCategory){
+            Lessons.PRONOUN_PREPOSITION.title ->  userData.pronounAndPreposition += lessonText
+            Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous += lessonText
+            Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence += lessonText
+            Lessons.PRESENT_SIMPLE.title -> userData.presentSimple += lessonText
+            Lessons.PASSIVE_VOICE.title -> userData.passiveVoice += lessonText
+            Lessons.COMPARE_WORDS.title -> userData.compareWords += lessonText
+            Lessons.VARIOUS_WORDS.title -> userData.variousWords += lessonText
+            Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot += lessonText
+            Lessons.DATE_AND_TIME.title -> userData.dateAndTime += lessonText
+            "WFL" -> userData.wordsForLearning += lessonText
+        }
+        return userData
+    }
+
+
+    // TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+    fun receiveMainLessonsMenu(stringChatId: String, messageText: String, url: String){
+        val hintMessage = SendPhoto()
+        hintMessage.putData(stringChatId, "https://mulino58.ru/wp-content/uploads/f/f/1/ff19b56689e24788a517aebe4ae9ede4.jpg")
+    }
+
+    fun receiveHintPicture(stringChatId: String, url: String): SendPhoto{
+        val sendPhoto = SendPhoto()
+        sendPhoto.chatId = stringChatId
+        sendPhoto.photo = InputFile(url)
+        return sendPhoto
+    }
+
+    fun receiveSettingMenu(chatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean): SendMessage {
+        val sendMessage = SendMessage()
+        sendMessage.chatId = chatId
+        sendMessage.text = messageText
+
+        val showHint: String = if(isShowHint) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+        val simpleText: String = if(isSimpleText) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+        val usersText: String = if(isOnlyUsersText) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
+
+        val showHintButton = InlineKeyboardButton()
+        showHintButton.text = "Показывать таблицы и подсказки:  $showHint"
+        showHintButton.callbackData = "#hint"
+        firstRowInlineButton.add(showHintButton)
+
+        val simpleTextButton = InlineKeyboardButton()
+        simpleTextButton.text = "Только простые тексты уроков:  $simpleText"
+        simpleTextButton.callbackData = "#simple"
+        secondRowInlineButton.add(simpleTextButton)
+
+        val userTextButton = InlineKeyboardButton()
+        userTextButton.text = "Только свои тексты уроков:  $usersText"
+        userTextButton.callbackData = "#usrtxt"
+        thirdRowInlineButton.add(userTextButton)
+
+
+        rowsInline.add(firstRowInlineButton)
+        rowsInline.add(secondRowInlineButton)
+        rowsInline.add(thirdRowInlineButton)
+        inlineKeyboardMarkup.keyboard = rowsInline
+        sendMessage.replyMarkup = inlineKeyboardMarkup
+        return sendMessage
+    }
+
+
+
+
 
 
 

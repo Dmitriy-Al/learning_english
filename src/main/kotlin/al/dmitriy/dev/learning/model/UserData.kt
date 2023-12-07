@@ -17,6 +17,15 @@ open class UserData : Cloneable {
     @Column(name = "user_firstname")
     open var userFirstname: String =  ""
 
+    @Column(name = "use_simple_text")
+    open var isSimpleTexts: Boolean =  false
+
+    @Column(name = "only_users_texts")
+    open var isUsersTexts: Boolean =  false
+
+    @Column(name = "show_hint_message")
+    open var isShowHint: Boolean =  true
+
     @Column(name = "various_words", columnDefinition = "text")
     open var variousWords: String = ""
 
@@ -48,8 +57,6 @@ open class UserData : Cloneable {
     open var pronounAndPreposition: String = ""
 
 
-
-
     override fun clone(): Any {
         val any = Any()
         try{
@@ -60,12 +67,4 @@ open class UserData : Cloneable {
         return any
     }
 
-
 }
-
-
-/*
-@Entity(name = "user_data_storage")
-open class UserDataStorage(@Id open var chatId: Long?) {
-constructor() : this(null) {}
- */
