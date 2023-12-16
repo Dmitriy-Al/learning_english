@@ -118,12 +118,12 @@ class BotMenuFunction : BotMenuInterface {
 
 
 
-    fun createLessonButtonMenu(chatId: String, messageId: Int, lessonUnit: LessonUnit, dataText: String): EditMessageText {
+    fun createLessonButtonMenu(stringChatId: String, messageId: Int, properlyLessonAnswer: Int, lessonUnit: LessonUnit, dataText: String): EditMessageText {
         var space = ""
         val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
+        editMessageText.chatId = stringChatId
         editMessageText.messageId = messageId
-        editMessageText.text = "\uD83D\uDD39 " + lessonUnit.russianText + "\nㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n✏ " + lessonUnit.inputText
+        editMessageText.text = "Правильных ответов: $properlyLessonAnswer ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n\uD83D\uDD39 " + lessonUnit.russianText + "\n\n✏ " + lessonUnit.inputText
 
         val buttonText = mutableListOf<String>()
         buttonText.addAll(lessonUnit.forButtonText)
@@ -147,7 +147,7 @@ class BotMenuFunction : BotMenuInterface {
         val dataString = if (lessonUnit.inputText.split(" ").size == lessonUnit.englishText.split(" ").size) "finish" else dataText  //
 
         val inlineKeyboardMarkup: InlineKeyboardMarkup = createLessonKeyBoard(buttonText, dataString)
-        editMessageText.replyMarkup = inlineKeyboardMarkup  // TODO
+        editMessageText.replyMarkup = inlineKeyboardMarkup
         return editMessageText
     }
 
@@ -273,29 +273,18 @@ class BotMenuFunction : BotMenuInterface {
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
         val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
         val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val fourthRowInlineButton = ArrayList<InlineKeyboardButton>()
+
 
         val trainingButton = InlineKeyboardButton()
         trainingButton.putData("\uD83C\uDD8E  Тренировка", "#tran")
         firstRowInlineButton.add(trainingButton)
 
         val myWordsButton = InlineKeyboardButton()
-        myWordsButton.putData("\uD83D\uDEAE  Убрать слово из изучаемых", "#todelWFL")
+        myWordsButton.putData("Добавить/удалить слова для изучения", "#ownУчить новые слова")
         secondRowInlineButton.add(myWordsButton)
-
-        val learnWordButton = InlineKeyboardButton()
-        learnWordButton.putData("\uD83D\uDD24  Добавить слово на изучение", "#addWFL")
-        thirdRowInlineButton.add(learnWordButton)
-
-        val fourthButton = InlineKeyboardButton()
-        fourthButton.putData("\uD83D\uDCDC  Список изучаемых слов", "#showWFL")
-        fourthRowInlineButton.add(fourthButton)
 
         rowsInline.add(firstRowInlineButton)
         rowsInline.add(secondRowInlineButton)
-        rowsInline.add(thirdRowInlineButton)
-        rowsInline.add(fourthRowInlineButton)
 
         inlineKeyboardMarkup.keyboard = rowsInline
         editMessageText.replyMarkup = inlineKeyboardMarkup
@@ -303,10 +292,9 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
-    fun receiveBillboard(stringChatId: String, messageText: String, url: String): SendPhoto{
+    fun receiveBillboard(stringChatId: String, url: String): SendPhoto {
         val sendPhoto = SendPhoto()
         sendPhoto.chatId = stringChatId
-        // sendPhoto.caption = messageText
         sendPhoto.photo = InputFile(url)
 
         val replyKeyboardMarkup = ReplyKeyboardMarkup()
@@ -321,36 +309,140 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
+    fun receiveSettingMenu(chatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): SendMessage {
+        val sendMessage = SendMessage()
+        sendMessage.chatId = chatId
+        sendMessage.text = messageText
+        sendMessage.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
+        return sendMessage
+    }
+
+
+    fun receiveSettingMenu(chatId: String, messageId: Int, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.chatId = chatId
+        editMessageText.text = messageText
+        editMessageText.messageId = messageId
+        editMessageText.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
+        return editMessageText
+    }
+
+
+    private fun receiveButtonsForSettingMenu(isViewAsChat: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): InlineKeyboardMarkup {
+        val showHint: String = if(isShowHint) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+        val viewAsChat: String = if(isViewAsChat) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+        val usersText: String = if(isOnlyUsersText) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+        val trainingMessage: String = if(isSendTrainingMessage) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val fourthRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val fifthRowInlineButton = ArrayList<InlineKeyboardButton>()
+
+        val showHintButton = InlineKeyboardButton()
+        showHintButton.text = "Показывать таблицы и подсказки:  $showHint"
+        showHintButton.callbackData = "#hint"
+        firstRowInlineButton.add(showHintButton)
+
+        val simpleTextButton = InlineKeyboardButton()
+        simpleTextButton.text = "Отображение в формате чата:  $viewAsChat"
+        simpleTextButton.callbackData = "#aschat"
+        secondRowInlineButton.add(simpleTextButton)
+
+        val userTextButton = InlineKeyboardButton()
+        userTextButton.text = "Только свои тексты уроков:  $usersText"
+        userTextButton.callbackData = "#usrtxt"
+        thirdRowInlineButton.add(userTextButton)
+
+        val trainingButton = InlineKeyboardButton()
+        trainingButton.text = "Сообщения с тренировками:  $trainingMessage"
+        trainingButton.callbackData = "#trmes"
+        fourthRowInlineButton.add(trainingButton)
+
+        rowsInline.add(firstRowInlineButton)
+        rowsInline.add(secondRowInlineButton)
+        rowsInline.add(thirdRowInlineButton)
+        rowsInline.add(fourthRowInlineButton)
+
+        if(isSendTrainingMessage) {
+            val sinceTimeDownButton = InlineKeyboardButton()
+            sinceTimeDownButton.text = "⏪ с $sinceTime"
+            sinceTimeDownButton.callbackData = "#timeSinceDown"
+            fifthRowInlineButton.add(sinceTimeDownButton)
+
+            val sinceTimeUpButton = InlineKeyboardButton()
+            sinceTimeUpButton.text = "⏩"
+            sinceTimeUpButton.callbackData = "#timeSinceUp"
+            fifthRowInlineButton.add(sinceTimeUpButton)
+
+
+            val untilTimeDownButton = InlineKeyboardButton()
+            untilTimeDownButton.text = "⏪"
+            untilTimeDownButton.callbackData = "#timeUntilDown"
+            fifthRowInlineButton.add(untilTimeDownButton)
+
+            val untilTimeUpButton = InlineKeyboardButton()
+            untilTimeUpButton.text = "до $untilTime ⏩"
+            untilTimeUpButton.callbackData = "#timeUntilUp"
+            fifthRowInlineButton.add(untilTimeUpButton)
+
+            rowsInline.add(fifthRowInlineButton)
+        }
+
+        inlineKeyboardMarkup.keyboard = rowsInline
+        return inlineKeyboardMarkup
+    }
+
+
+    fun receiveGoBackMenu(stringChatId: String, messageText: String): SendMessage{
+        val sendMessage = SendMessage(stringChatId, messageText)
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+
+        val rowInlineButton = ArrayList<InlineKeyboardButton>()
+        val backButton = InlineKeyboardButton()
+        backButton.text = "\uD83D\uDD19  Назад"
+        backButton.callbackData = "#own"
+        rowInlineButton.add(backButton)
+        rowsInline.add(rowInlineButton)
+        inlineKeyboardMarkup.keyboard = rowsInline
+        sendMessage.replyMarkup = inlineKeyboardMarkup
+        return sendMessage
+    }
+
+
     fun removeLessonTextFromDb(lessonCategory: String, userData: UserData, lessonText: String) {
         when(lessonCategory){
             Lessons.PRONOUN_PREPOSITION.title -> userData.pronounAndPreposition = lessonText
             Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous = lessonText
             Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence = lessonText
             Lessons.PRESENT_SIMPLE.title -> userData.presentSimple = lessonText
+            Lessons.LEARN_WORDS.title -> userData.wordsForLearning = lessonText
             Lessons.COMPARE_WORDS.title -> userData.compareWords = lessonText
             Lessons.VARIOUS_WORDS.title -> userData.variousWords = lessonText
             Lessons.PASSIVE_VOICE.title -> userData.passiveVoice = lessonText
             Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot = lessonText
             Lessons.DATE_AND_TIME.title -> userData.dateAndTime = lessonText
-            "WFL" -> userData.wordsForLearning = lessonText // TODO
         }
     }
 
 
     fun receiveLessonTextFromDb(lessonCategory: String, userData: UserData): String{
         var userLessonText = ""
-
         when(lessonCategory){
             Lessons.PRONOUN_PREPOSITION.title -> userLessonText = userData.pronounAndPreposition
             Lessons.PRESENT_CONTINUOUS.title -> userLessonText = userData.presentContinuous
             Lessons.PRESENT_SENTENCE.title -> userLessonText = userData.perfectSentence
             Lessons.PRESENT_SIMPLE.title -> userLessonText = userData.presentSimple
+            Lessons.LEARN_WORDS.title -> userLessonText = userData.wordsForLearning
             Lessons.COMPARE_WORDS.title -> userLessonText = userData.compareWords
             Lessons.VARIOUS_WORDS.title -> userLessonText = userData.variousWords
             Lessons.PASSIVE_VOICE.title -> userLessonText = userData.passiveVoice
             Lessons.MUCH_MANY_LOT.title -> userLessonText = userData.muchManyLot
             Lessons.DATE_AND_TIME.title -> userLessonText = userData.dateAndTime
-            "WFL" -> userLessonText = userData.wordsForLearning
         }
         return userLessonText
     }
@@ -361,16 +453,24 @@ class BotMenuFunction : BotMenuInterface {
             Lessons.PRONOUN_PREPOSITION.title ->  userData.pronounAndPreposition += lessonText
             Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous += lessonText
             Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence += lessonText
+            Lessons.LEARN_WORDS.title -> userData.wordsForLearning += lessonText
             Lessons.PRESENT_SIMPLE.title -> userData.presentSimple += lessonText
             Lessons.PASSIVE_VOICE.title -> userData.passiveVoice += lessonText
             Lessons.COMPARE_WORDS.title -> userData.compareWords += lessonText
             Lessons.VARIOUS_WORDS.title -> userData.variousWords += lessonText
             Lessons.MUCH_MANY_LOT.title -> userData.muchManyLot += lessonText
             Lessons.DATE_AND_TIME.title -> userData.dateAndTime += lessonText
-            "WFL" -> userData.wordsForLearning += lessonText
         }
         return userData
     }
+
+
+    fun isTextIncorrect(messageText: String, lessonCategory: String): Boolean{
+        return messageText.contains("⚙") || messageText.contains("\uD83D\uDCDA") || messageText.contains("/") || // TODO не более 10 слов
+                messageText.contains("#") || messageText.contains("*") || (lessonCategory == Lessons.LEARN_WORDS.title &&
+                messageText.length > 15 ) || (messageText.split(" ").size > 10) || messageText.length > 100 || messageText.contains("  ")
+    }
+
 
 
     // TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -389,52 +489,24 @@ class BotMenuFunction : BotMenuInterface {
         return sendPhoto
     }
 
-    fun receiveSettingMenu(chatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean): SendMessage {
-        val sendMessage = SendMessage()
-        sendMessage.chatId = chatId
-        sendMessage.text = messageText
+    fun receiveStatisticForAdmin(chatId: String, messageId: Int, usersData: Iterable<UserData>): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.chatId = chatId
+        editMessageText.messageId = messageId
+        editMessageText.text = "messageText"
 
-        val showHint: String = if(isShowHint) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
-        val simpleText: String = if(isSimpleText) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
-        val usersText: String = if(isOnlyUsersText) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
-
-        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
-        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
-
-        val showHintButton = InlineKeyboardButton()
-        showHintButton.text = "Показывать таблицы и подсказки:  $showHint"
-        showHintButton.callbackData = "#hint"
-        firstRowInlineButton.add(showHintButton)
-
-        val simpleTextButton = InlineKeyboardButton()
-        simpleTextButton.text = "Только простые тексты уроков:  $simpleText"
-        simpleTextButton.callbackData = "#simple"
-        secondRowInlineButton.add(simpleTextButton)
-
-        val userTextButton = InlineKeyboardButton()
-        userTextButton.text = "Только свои тексты уроков:  $usersText"
-        userTextButton.callbackData = "#usrtxt"
-        thirdRowInlineButton.add(userTextButton)
-
-
-        rowsInline.add(firstRowInlineButton)
-        rowsInline.add(secondRowInlineButton)
-        rowsInline.add(thirdRowInlineButton)
-        inlineKeyboardMarkup.keyboard = rowsInline
-        sendMessage.replyMarkup = inlineKeyboardMarkup
-        return sendMessage
+        return editMessageText
     }
 
 
-
-
-
-
-
-
+    fun receiveInfoMenuForAdmin(chatId: String, messageId: Int, messageText: String, categories: List<String>): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.chatId = chatId
+        editMessageText.messageId = messageId
+        editMessageText.text = messageText
+        editMessageText.replyMarkup = createButtonMenu(categories)
+        return editMessageText
+    }
 
 
 

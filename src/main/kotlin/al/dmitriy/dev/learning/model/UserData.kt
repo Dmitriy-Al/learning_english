@@ -3,31 +3,42 @@ package al.dmitriy.dev.learning.model
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import java.sql.Timestamp
 
 @Entity(name = "user_data_storage")
 open class UserData : Cloneable {
 
 
     @Id
-    @Column(name = "string_chat_id")
+    @Column(name = "chat_id")
     open var chatId: Long = 0
 
-    open var username: String =  ""
+    @Column(name = "username")
+    open var username: String = ""
 
     @Column(name = "user_firstname")
-    open var userFirstname: String =  ""
+    open var userFirstname: String = ""
 
-    @Column(name = "use_simple_text")
-    open var isSimpleTexts: Boolean =  false
+    @Column(name = "training_message_since_time")
+    open var sinceTime: Int = 12
 
-    @Column(name = "only_users_texts")
-    open var isUsersTexts: Boolean =  false
+    @Column(name = "training_message_until_time")
+    open var untilTime: Int = 20
 
     @Column(name = "show_hint_message")
     open var isShowHint: Boolean =  true
 
-    @Column(name = "various_words", columnDefinition = "text")
-    open var variousWords: String = ""
+    @Column(name = "view_as_chat")
+    open var isViewAsChat: Boolean =  false
+
+    @Column(name = "only_users_texts")
+    open var isUsersTexts: Boolean =  false
+
+    @Column(name = "send_training_message")
+    open var isSendTrainingMessage: Boolean =  false
+
+    @Column(name = "user_register_date_time")
+    open var userRegisterDateTime: Timestamp = Timestamp(System.currentTimeMillis())
 
     @Column(name = "date_and_time", columnDefinition = "text")
     open var dateAndTime: String = ""
@@ -40,6 +51,9 @@ open class UserData : Cloneable {
 
     @Column(name = "compare_words", columnDefinition = "text")
     open var compareWords: String = ""
+
+    @Column(name = "various_words", columnDefinition = "text")
+    open var variousWords: String = ""
 
     @Column(name = "present_simple", columnDefinition = "text")
     open var presentSimple: String = ""
