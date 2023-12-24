@@ -1,7 +1,7 @@
 package al.dmitriy.dev.learning.service
 
 import al.dmitriy.dev.learning.extendfunctions.putData
-import al.dmitriy.dev.learning.dataunit.LessonUnit
+import al.dmitriy.dev.learning.service.dataunit.LessonUnit
 import al.dmitriy.dev.learning.lesson.Lessons
 import al.dmitriy.dev.learning.model.UserData
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -12,37 +12,65 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
+import al.dmitriy.dev.learning.apptexts.textForButtonMenu
+import al.dmitriy.dev.learning.apptexts.textForOff
+import al.dmitriy.dev.learning.apptexts.textForOn
 
 class BotMenuFunction : BotMenuInterface {
 
 
-    fun setKeyBoard(sendMessage: SendMessage) {
-        val replyKeyboardMarkup = ReplyKeyboardMarkup()
-        replyKeyboardMarkup.resizeKeyboard = true
-        val firstRow = KeyboardRow()
-        firstRow.add("\uD83D\uDCDA Уроки")
-        firstRow.add("Настройки ⚙")
-        val keyboardRows: List<KeyboardRow> = listOf(firstRow)
-        replyKeyboardMarkup.keyboard = keyboardRows
-        sendMessage.replyMarkup = replyKeyboardMarkup
+    fun isTextIncorrect(messageText: String, lessonCategory: String): Boolean{
+        return messageText.contains("⚙") || messageText.contains("\uD83D\uDCDA") || messageText.contains("/") ||
+                messageText.contains("#") || messageText.contains("*") || (lessonCategory == Lessons.LEARN_WORDS.title &&
+                messageText.length > 15 ) || (messageText.split(" ").size > 10) || messageText.length > 70 ||
+                messageText.contains("  ")
     }
 
 
-    fun categoryMenu(chatId: Long, messageText: String, categories: List<String>): SendMessage {
-        val sendMessage = SendMessage()
-        sendMessage.setChatId(chatId)
-        sendMessage.text = messageText
+    fun categoryMenu(stringChatId: String, messageText: String, categories: List<String>): SendMessage {
+        val sendMessage = SendMessage(stringChatId, messageText)
         sendMessage.replyMarkup = createButtonMenu(categories)
         return sendMessage
     }
 
 
-    fun receiveButtonEditMessage(chatId: String, messageId: Int, messageText: String, callBackData: String, buttonTexts: List<String>): EditMessageText {
+    fun receiveButtonEditMessage(stringChatId: String, messageId: Int, messageText: String, callBackData: String, buttonTexts: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.messageId = messageId
-        editMessageText.text = messageText
+        editMessageText.putData(stringChatId, messageId, messageText)
         editMessageText.replyMarkup = createDataButtonMenu(buttonTexts, callBackData)
+        return editMessageText
+    }
+
+
+    fun receiveSettingMenu(stringChatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean,
+                           isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): SendMessage {
+        val sendMessage = SendMessage(stringChatId, messageText)
+        sendMessage.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
+        return sendMessage
+    }
+
+
+    fun receiveSettingMenu(stringChatId: String, messageId: Int, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean,
+                           isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.putData(stringChatId, messageId, messageText)
+        editMessageText.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
+        return editMessageText
+    }
+
+
+    fun receiveCategoryMenu(stringChatId: String, messageId: Int, callbackData: String, messageText: String, categories: List<String>): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.putData(stringChatId, messageId, messageText)
+        editMessageText.replyMarkup = createDataButtonMenu(categories, callbackData)
+        return editMessageText
+    }
+
+
+    fun receiveInfoMenuForAdmin(stringChatId: String, intMessageId: Int, messageText: String, categories: List<String>): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.putData(stringChatId, intMessageId, messageText)
+        editMessageText.replyMarkup = createButtonMenu(categories)
         return editMessageText
     }
 
@@ -64,7 +92,7 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
-     override fun createDataButtonMenu(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
+    override fun createDataButtonMenu(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
 
@@ -81,49 +109,13 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
-    fun receiveChoseMenu(chatId: String, messageId: Int, callBackText: String, messageText: String): EditMessageText{
-        val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.messageId = messageId
-        editMessageText.text = messageText
-
-        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
-        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
-
-        val showButton = InlineKeyboardButton()
-
-        showButton.text = "Посмотреть список моих текстов"
-        showButton.callbackData = "#show$callBackText"
-        firstRowInlineButton.add(showButton)
-
-        val addButton = InlineKeyboardButton()
-        val delButton = InlineKeyboardButton()
-
-        addButton.text = "Добавить текст"
-        addButton.callbackData = "#add$callBackText"
-        secondRowInlineButton.add(addButton)
-
-        delButton.text = "Удалить текст"
-        delButton.callbackData = "#todel$callBackText"
-        secondRowInlineButton.add(delButton)
-
-        rowsInline.add(firstRowInlineButton)
-        rowsInline.add(secondRowInlineButton)
-        inlineKeyboardMarkup.keyboard = rowsInline
-        editMessageText.replyMarkup = inlineKeyboardMarkup
-        return editMessageText
-    }
-
-
-
     fun createLessonButtonMenu(stringChatId: String, messageId: Int, properlyLessonAnswer: Int, lessonUnit: LessonUnit, dataText: String): EditMessageText {
         var space = ""
+        val textForMessage = "Правильных ответов: $properlyLessonAnswer$textForButtonMenu" +
+                lessonUnit.russianText + "\n\n✏ " + lessonUnit.inputText
+
         val editMessageText = EditMessageText()
-        editMessageText.chatId = stringChatId
-        editMessageText.messageId = messageId
-        editMessageText.text = "Правильных ответов: $properlyLessonAnswer ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ\n\uD83D\uDD39 " + lessonUnit.russianText + "\n\n✏ " + lessonUnit.inputText
+        editMessageText.putData(stringChatId, messageId, textForMessage)
 
         val buttonText = mutableListOf<String>()
         buttonText.addAll(lessonUnit.forButtonText)
@@ -144,10 +136,116 @@ class BotMenuFunction : BotMenuInterface {
                 }
             }
         }
-        val dataString = if (lessonUnit.inputText.split(" ").size == lessonUnit.englishText.split(" ").size) "finish" else dataText  //
+        val dataString = if (lessonUnit.inputText.split(" ").size == lessonUnit.englishText.split(" ").size) callData_endOfTxt else dataText  //
 
         val inlineKeyboardMarkup: InlineKeyboardMarkup = createLessonKeyBoard(buttonText, dataString)
         editMessageText.replyMarkup = inlineKeyboardMarkup
+        return editMessageText
+    }
+
+
+    fun createMenuForTextDelete(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+
+        for (i in textForButton.indices) {
+            val number = i + 1
+            val buttonText = "$number. " + textForButton[i].replace("*", " ◂▸ ")
+            val button = InlineKeyboardButton()
+            button.putData(buttonText, "$i" + callData_divF + callBackData)
+
+            val rowInlineButton = ArrayList<InlineKeyboardButton>()
+            rowInlineButton.add(button)
+            rowsInline.add(rowInlineButton)
+        }
+
+        val delAllButton = InlineKeyboardButton()
+        delAllButton.text = "⭕  Удалить все тексты"
+        delAllButton.callbackData = "-1$callData_divF$callBackData"
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        firstRowInlineButton.add(delAllButton)
+        rowsInline.add(firstRowInlineButton)
+
+        val backButton = InlineKeyboardButton()
+        backButton.putData("\uD83D\uDD19  Назад", callData_own)
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+        secondRowInlineButton.add(backButton)
+        rowsInline.add(secondRowInlineButton)
+
+        inlineKeyboardMarkup.keyboard = rowsInline
+        return inlineKeyboardMarkup
+    }
+
+
+    fun receiveBillboard(stringChatId: String, url: String): SendPhoto {
+        val sendPhoto = SendPhoto()
+        sendPhoto.chatId = stringChatId
+        sendPhoto.photo = InputFile(url)
+
+        val replyKeyboardMarkup = ReplyKeyboardMarkup()
+        replyKeyboardMarkup.resizeKeyboard = true
+        val firstRow = KeyboardRow()
+        firstRow.add("\uD83D\uDCDA Уроки")
+        firstRow.add("Настройки ⚙")
+        val keyboardRows: List<KeyboardRow> = listOf(firstRow)
+        replyKeyboardMarkup.keyboard = keyboardRows
+        sendPhoto.replyMarkup = replyKeyboardMarkup
+        return sendPhoto
+    }
+
+
+    fun receiveLearnWordMenu(stringChatId: String, messageId: Int, messageText: String): EditMessageText {
+        val editMessageText = EditMessageText()
+        editMessageText.putData(stringChatId, messageId, messageText)
+
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+
+        val trainingButton = InlineKeyboardButton()
+        trainingButton.putData("\uD83C\uDD8E  Тренировка", callData_Training)
+        firstRowInlineButton.add(trainingButton)
+
+        val myWordsButton = InlineKeyboardButton()
+        myWordsButton.putData("Добавить/удалить слова для изучения", callData_own + Lessons.LEARN_WORDS.title)
+        secondRowInlineButton.add(myWordsButton)
+
+        rowsInline.add(firstRowInlineButton)
+        rowsInline.add(secondRowInlineButton)
+
+        inlineKeyboardMarkup.keyboard = rowsInline
+        editMessageText.replyMarkup = inlineKeyboardMarkup
+        return editMessageText
+    }
+
+
+    fun receiveChoseMenu(stringChatId: String, messageId: Int, callBackText: String, messageText: String): EditMessageText{
+        val editMessageText = EditMessageText()
+        editMessageText.putData(stringChatId, messageId, messageText)
+
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
+
+        val showButton = InlineKeyboardButton()
+        showButton.putData("Посмотреть список моих текстов", callData_show + callBackText)
+        firstRowInlineButton.add(showButton)
+
+        val addButton = InlineKeyboardButton()
+        addButton.putData("Добавить текст", callData_addTxt + callBackText)
+        secondRowInlineButton.add(addButton)
+
+        val delButton = InlineKeyboardButton()
+        delButton.putData("Удалить текст", callData_delTxt + callBackText)
+        secondRowInlineButton.add(delButton)
+
+        rowsInline.add(firstRowInlineButton)
+        rowsInline.add(secondRowInlineButton)
+        inlineKeyboardMarkup.keyboard = rowsInline
+        editMessageText.replyMarkup = inlineKeyboardMarkup
+
         return editMessageText
     }
 
@@ -203,7 +301,7 @@ class BotMenuFunction : BotMenuInterface {
         fourthRowInlineButton.add(tenthButton)
 
         val deleteButton = InlineKeyboardButton()
-        deleteButton.putData("ㅤㅤ\uD83D\uDD19️ Убрать словоㅤㅤ", "delword")
+        deleteButton.putData("ㅤㅤ\uD83D\uDD19️ Убрать словоㅤㅤ", callData_delWord)
         fifthRowInlineButton.add(deleteButton)
 
         rowsInline.add(firstRowInlineButton)
@@ -217,122 +315,12 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
-
-    fun createButtonMenuForDelete(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
-        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
-
-        for (i in textForButton.indices) {
-            val number = i + 1
-            val buttonText = "$number. " + textForButton[i].replace("*", " ◂▸ ")
-            val button = InlineKeyboardButton()
-            button.text = buttonText
-            button.callbackData = "$i@$callBackData"
-
-            val rowInlineButton = ArrayList<InlineKeyboardButton>()
-            rowInlineButton.add(button)
-            rowsInline.add(rowInlineButton)
-        }
-
-        val delAllButton = InlineKeyboardButton()
-        delAllButton.text = "⭕  Удалить все тексты"
-        delAllButton.callbackData = "-1@$callBackData"
-        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
-        firstRowInlineButton.add(delAllButton)
-        rowsInline.add(firstRowInlineButton)
-
-        val backButton = InlineKeyboardButton()
-        backButton.text = "\uD83D\uDD19  Назад"
-        backButton.callbackData = "#own"
-        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
-        secondRowInlineButton.add(backButton)
-        rowsInline.add(secondRowInlineButton)
-
-        inlineKeyboardMarkup.keyboard = rowsInline
-        return inlineKeyboardMarkup
-    }
-
-
-    fun receiveCategoryMenu(chatId: String, messageId: Int, callbackData: String, messageText: String, categories: List<String>): EditMessageText {
-        val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.messageId = messageId
-        editMessageText.text = messageText
-        editMessageText.replyMarkup = createDataButtonMenu(categories, callbackData)
-        return editMessageText
-    }
-
-
-    fun receiveLearnWordMenu(chatId: String, messageId: Int, messageText: String): EditMessageText {
-        val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.messageId = messageId
-        editMessageText.text = messageText
-
-        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
-        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
-
-
-        val trainingButton = InlineKeyboardButton()
-        trainingButton.putData("\uD83C\uDD8E  Тренировка", "#tran")
-        firstRowInlineButton.add(trainingButton)
-
-        val myWordsButton = InlineKeyboardButton()
-        myWordsButton.putData("Добавить/удалить слова для изучения", "#ownУчить новые слова")
-        secondRowInlineButton.add(myWordsButton)
-
-        rowsInline.add(firstRowInlineButton)
-        rowsInline.add(secondRowInlineButton)
-
-        inlineKeyboardMarkup.keyboard = rowsInline
-        editMessageText.replyMarkup = inlineKeyboardMarkup
-        return editMessageText
-    }
-
-
-    fun receiveBillboard(stringChatId: String, url: String): SendPhoto {
-        val sendPhoto = SendPhoto()
-        sendPhoto.chatId = stringChatId
-        sendPhoto.photo = InputFile(url)
-
-        val replyKeyboardMarkup = ReplyKeyboardMarkup()
-        replyKeyboardMarkup.resizeKeyboard = true
-        val firstRow = KeyboardRow()
-        firstRow.add("\uD83D\uDCDA Уроки")
-        firstRow.add("Настройки ⚙")
-        val keyboardRows: List<KeyboardRow> = listOf(firstRow)
-        replyKeyboardMarkup.keyboard = keyboardRows
-        sendPhoto.replyMarkup = replyKeyboardMarkup
-        return sendPhoto
-    }
-
-
-    fun receiveSettingMenu(chatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): SendMessage {
-        val sendMessage = SendMessage()
-        sendMessage.chatId = chatId
-        sendMessage.text = messageText
-        sendMessage.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
-        return sendMessage
-    }
-
-
-    fun receiveSettingMenu(chatId: String, messageId: Int, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): EditMessageText {
-        val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.text = messageText
-        editMessageText.messageId = messageId
-        editMessageText.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
-        return editMessageText
-    }
-
-
-    private fun receiveButtonsForSettingMenu(isViewAsChat: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): InlineKeyboardMarkup {
-        val showHint: String = if(isShowHint) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
-        val viewAsChat: String = if(isViewAsChat) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
-        val usersText: String = if(isOnlyUsersText) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
-        val trainingMessage: String = if(isSendTrainingMessage) "\uD835\uDC0E\uD835\uDC0D" else "\uD835\uDC0E\uD835\uDC05\uD835\uDC05"
+    private fun receiveButtonsForSettingMenu(isViewAsChat: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean,
+                                             isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): InlineKeyboardMarkup {
+        val showHint: String = if(isShowHint) textForOn else textForOff
+        val viewAsChat: String = if(isViewAsChat) textForOn else textForOff
+        val usersText: String = if(isOnlyUsersText) textForOn else textForOff
+        val trainingMessage: String = if(isSendTrainingMessage) textForOn else textForOff
 
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -343,23 +331,19 @@ class BotMenuFunction : BotMenuInterface {
         val fifthRowInlineButton = ArrayList<InlineKeyboardButton>()
 
         val showHintButton = InlineKeyboardButton()
-        showHintButton.text = "Показывать таблицы и подсказки:  $showHint"
-        showHintButton.callbackData = "#hint"
+        showHintButton.putData("Показывать таблицы и подсказки:  $showHint", callData_showHint)
         firstRowInlineButton.add(showHintButton)
 
         val simpleTextButton = InlineKeyboardButton()
-        simpleTextButton.text = "Отображение в формате чата:  $viewAsChat"
-        simpleTextButton.callbackData = "#aschat"
+        simpleTextButton.putData("Отображение в формате чата:  $viewAsChat", callData_asChat)
         secondRowInlineButton.add(simpleTextButton)
 
         val userTextButton = InlineKeyboardButton()
-        userTextButton.text = "Только свои тексты уроков:  $usersText"
-        userTextButton.callbackData = "#usrtxt"
+        userTextButton.putData("Только свои тексты уроков:  $usersText", callData_userTxt)
         thirdRowInlineButton.add(userTextButton)
 
         val trainingButton = InlineKeyboardButton()
-        trainingButton.text = "Сообщения с тренировками:  $trainingMessage"
-        trainingButton.callbackData = "#trmes"
+        trainingButton.putData("Сообщения с тренировками:  $trainingMessage", callData_trainMessage)
         fourthRowInlineButton.add(trainingButton)
 
         rowsInline.add(firstRowInlineButton)
@@ -369,26 +353,20 @@ class BotMenuFunction : BotMenuInterface {
 
         if(isSendTrainingMessage) {
             val sinceTimeDownButton = InlineKeyboardButton()
-            sinceTimeDownButton.text = "⏪ с $sinceTime"
-            sinceTimeDownButton.callbackData = "#timeSinceDown"
+            sinceTimeDownButton.putData("⏪ с $sinceTime", callData_setTime + "SinceDown")
             fifthRowInlineButton.add(sinceTimeDownButton)
 
             val sinceTimeUpButton = InlineKeyboardButton()
-            sinceTimeUpButton.text = "⏩"
-            sinceTimeUpButton.callbackData = "#timeSinceUp"
+            sinceTimeUpButton.putData("⏩", callData_setTime + "SinceUp")
             fifthRowInlineButton.add(sinceTimeUpButton)
 
-
             val untilTimeDownButton = InlineKeyboardButton()
-            untilTimeDownButton.text = "⏪"
-            untilTimeDownButton.callbackData = "#timeUntilDown"
+            untilTimeDownButton.putData("⏪", callData_setTime + "UntilDown")
             fifthRowInlineButton.add(untilTimeDownButton)
 
             val untilTimeUpButton = InlineKeyboardButton()
-            untilTimeUpButton.text = "до $untilTime ⏩"
-            untilTimeUpButton.callbackData = "#timeUntilUp"
+            untilTimeUpButton.putData("до $untilTime ⏩", callData_setTime + "UntilUp")
             fifthRowInlineButton.add(untilTimeUpButton)
-
             rowsInline.add(fifthRowInlineButton)
         }
 
@@ -397,28 +375,44 @@ class BotMenuFunction : BotMenuInterface {
     }
 
 
-    fun receiveGoBackMenu(stringChatId: String, messageText: String): SendMessage{
-        val sendMessage = SendMessage(stringChatId, messageText)
+    fun receiveOneButtonMenu(buttonText: String, buttonData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
 
         val rowInlineButton = ArrayList<InlineKeyboardButton>()
         val backButton = InlineKeyboardButton()
-        backButton.text = "\uD83D\uDD19  Назад"
-        backButton.callbackData = "#own"
+        backButton.text = buttonText
+        backButton.callbackData = buttonData
         rowInlineButton.add(backButton)
         rowsInline.add(rowInlineButton)
         inlineKeyboardMarkup.keyboard = rowsInline
-        sendMessage.replyMarkup = inlineKeyboardMarkup
-        return sendMessage
+        return inlineKeyboardMarkup
+    }
+
+
+    fun receiveTwoButtonsMenu(firstButtonText: String, firstData: String, secondButtonText: String, secondData: String): InlineKeyboardMarkup {
+        val inlineKeyboardMarkup = InlineKeyboardMarkup()
+        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
+        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
+
+        val firstButton = InlineKeyboardButton()
+        firstButton.putData(firstButtonText, firstData)
+        firstRowInlineButton.add(firstButton)
+
+        val secondButton = InlineKeyboardButton()
+        secondButton.putData(secondButtonText, secondData)
+        firstRowInlineButton.add(secondButton)
+
+        rowsInline.add(firstRowInlineButton)
+        inlineKeyboardMarkup.keyboard = rowsInline
+        return inlineKeyboardMarkup
     }
 
 
     fun removeLessonTextFromDb(lessonCategory: String, userData: UserData, lessonText: String) {
         when(lessonCategory){
-            Lessons.PRONOUN_PREPOSITION.title -> userData.pronounAndPreposition = lessonText
             Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous = lessonText
-            Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence = lessonText
+            Lessons.PERFECT_TENSE.title -> userData.perfectSentence = lessonText
             Lessons.PRESENT_SIMPLE.title -> userData.presentSimple = lessonText
             Lessons.LEARN_WORDS.title -> userData.wordsForLearning = lessonText
             Lessons.COMPARE_WORDS.title -> userData.compareWords = lessonText
@@ -433,9 +427,8 @@ class BotMenuFunction : BotMenuInterface {
     fun receiveLessonTextFromDb(lessonCategory: String, userData: UserData): String{
         var userLessonText = ""
         when(lessonCategory){
-            Lessons.PRONOUN_PREPOSITION.title -> userLessonText = userData.pronounAndPreposition
             Lessons.PRESENT_CONTINUOUS.title -> userLessonText = userData.presentContinuous
-            Lessons.PRESENT_SENTENCE.title -> userLessonText = userData.perfectSentence
+            Lessons.PERFECT_TENSE.title -> userLessonText = userData.perfectSentence
             Lessons.PRESENT_SIMPLE.title -> userLessonText = userData.presentSimple
             Lessons.LEARN_WORDS.title -> userLessonText = userData.wordsForLearning
             Lessons.COMPARE_WORDS.title -> userLessonText = userData.compareWords
@@ -450,9 +443,8 @@ class BotMenuFunction : BotMenuInterface {
 
     fun updateLessonTextInDb(lessonText: String, lessonCategory: String, userData: UserData): UserData{
         when(lessonCategory){
-            Lessons.PRONOUN_PREPOSITION.title ->  userData.pronounAndPreposition += lessonText
             Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous += lessonText
-            Lessons.PRESENT_SENTENCE.title -> userData.perfectSentence += lessonText
+            Lessons.PERFECT_TENSE.title -> userData.perfectSentence += lessonText
             Lessons.LEARN_WORDS.title -> userData.wordsForLearning += lessonText
             Lessons.PRESENT_SIMPLE.title -> userData.presentSimple += lessonText
             Lessons.PASSIVE_VOICE.title -> userData.passiveVoice += lessonText
@@ -464,102 +456,4 @@ class BotMenuFunction : BotMenuInterface {
         return userData
     }
 
-
-    fun isTextIncorrect(messageText: String, lessonCategory: String): Boolean{
-        return messageText.contains("⚙") || messageText.contains("\uD83D\uDCDA") || messageText.contains("/") || // TODO не более 10 слов
-                messageText.contains("#") || messageText.contains("*") || (lessonCategory == Lessons.LEARN_WORDS.title &&
-                messageText.length > 15 ) || (messageText.split(" ").size > 10) || messageText.length > 100 || messageText.contains("  ")
-    }
-
-
-
-    // TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-
-    fun receiveMainLessonsMenu(stringChatId: String, messageText: String, url: String){
-        val hintMessage = SendPhoto()
-        hintMessage.putData(stringChatId, "https://mulino58.ru/wp-content/uploads/f/f/1/ff19b56689e24788a517aebe4ae9ede4.jpg")
-    }
-
-    fun receiveHintPicture(stringChatId: String, url: String): SendPhoto{
-        val sendPhoto = SendPhoto()
-        sendPhoto.chatId = stringChatId
-        sendPhoto.photo = InputFile(url)
-        return sendPhoto
-    }
-
-    fun receiveStatisticForAdmin(chatId: String, messageId: Int, usersData: Iterable<UserData>): EditMessageText {
-        val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.messageId = messageId
-        editMessageText.text = "messageText"
-
-        return editMessageText
-    }
-
-
-    fun receiveInfoMenuForAdmin(chatId: String, messageId: Int, messageText: String, categories: List<String>): EditMessageText {
-        val editMessageText = EditMessageText()
-        editMessageText.chatId = chatId
-        editMessageText.messageId = messageId
-        editMessageText.text = messageText
-        editMessageText.replyMarkup = createButtonMenu(categories)
-        return editMessageText
-    }
-
-
-
-
-
-
-    /*
-
-        override fun createButtonMenu(textForButton: List<String>): InlineKeyboardMarkup {
-            val inlineKeyboardMarkup = InlineKeyboardMarkup()
-            val rowsInline = ArrayList<List<InlineKeyboardButton>>()
-
-            for (element in textForButton) {
-                val rowInlineButton = ArrayList<InlineKeyboardButton>()
-                val button = InlineKeyboardButton()
-                button.text = element
-                button.callbackData = element
-                rowInlineButton.add(button)
-                rowsInline.add(rowInlineButton)
-            }
-            inlineKeyboardMarkup.keyboard = rowsInline
-            return inlineKeyboardMarkup
-        }
-     */
-
-
-
-
-
-
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-/*
-        /*
-        val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val fourthRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val fifthRowInlineButton = ArrayList<InlineKeyboardButton>()
-         */
-
-        val inlineKeyboardMarkup = InlineKeyboardMarkup()
-        val rowsInline = ArrayList<List<InlineKeyboardButton>>()
-        val rowInlineButton = ArrayList<InlineKeyboardButton>()
-        val button = InlineKeyboardButton()
-        button.text = splitLessonText[0]
-        button.callbackData = Lessons.PRESENT_SIMPLE.title
-        rowInlineButton.add(button)
-        rowsInline.add(rowInlineButton)
-        inlineKeyboardMarkup.keyboard = rowsInline
-        */
-
-
-
