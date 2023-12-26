@@ -18,7 +18,7 @@ import al.dmitriy.dev.learning.apptexts.textForOn
 
 class BotMenuFunction : BotMenuInterface {
 
-
+    // Проверка валидности введенного текста
     fun isTextIncorrect(messageText: String, lessonCategory: String): Boolean{
         return messageText.contains("⚙") || messageText.contains("\uD83D\uDCDA") || messageText.contains("/") ||
                 messageText.contains("#") || messageText.contains("*") || (lessonCategory == Lessons.LEARN_WORDS.title &&
@@ -26,14 +26,14 @@ class BotMenuFunction : BotMenuInterface {
                 messageText.contains("  ")
     }
 
-
+    // Список уроков (категорий)
     fun categoryMenu(stringChatId: String, messageText: String, categories: List<String>): SendMessage {
         val sendMessage = SendMessage(stringChatId, messageText)
         sendMessage.replyMarkup = createButtonMenu(categories)
         return sendMessage
     }
 
-
+    // Изменённое сообщение с экранными кнопками
     fun receiveButtonEditMessage(stringChatId: String, messageId: Int, messageText: String, callBackData: String, buttonTexts: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
@@ -41,7 +41,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Меню пользовательских настроек
     fun receiveSettingMenu(stringChatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean,
                            isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): SendMessage {
         val sendMessage = SendMessage(stringChatId, messageText)
@@ -49,7 +49,7 @@ class BotMenuFunction : BotMenuInterface {
         return sendMessage
     }
 
-
+    // Меню пользовательских настроек
     fun receiveSettingMenu(stringChatId: String, messageId: Int, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean,
                            isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): EditMessageText {
         val editMessageText = EditMessageText()
@@ -58,7 +58,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Список уроков других пользователей
     fun receiveCategoryMenu(stringChatId: String, messageId: Int, callbackData: String, messageText: String, categories: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
@@ -66,7 +66,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Меню администратора
     fun receiveInfoMenuForAdmin(stringChatId: String, intMessageId: Int, messageText: String, categories: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, intMessageId, messageText)
@@ -74,7 +74,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Экранные кнопки
     override fun createButtonMenu(textForButton: List<String>): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -82,8 +82,7 @@ class BotMenuFunction : BotMenuInterface {
         for (element in textForButton) {
             val rowInlineButton = ArrayList<InlineKeyboardButton>()
             val button = InlineKeyboardButton()
-            button.text = element
-            button.callbackData = element
+            button.putData(element, element)
             rowInlineButton.add(button)
             rowsInline.add(rowInlineButton)
         }
@@ -91,7 +90,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Экранные кнопки с добавленным текстом для callBackData
     override fun createDataButtonMenu(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -99,8 +98,7 @@ class BotMenuFunction : BotMenuInterface {
         for (element in textForButton) {
             val rowInlineButton = ArrayList<InlineKeyboardButton>()
             val button = InlineKeyboardButton()
-            button.text = element
-            button.callbackData = callBackData + element
+            button.putData(element, callBackData + element)
             rowInlineButton.add(button)
             rowsInline.add(rowInlineButton)
         }
@@ -108,7 +106,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Сообщение и экранные кнопки с текстом урока
     fun createLessonButtonMenu(stringChatId: String, messageId: Int, properlyLessonAnswer: Int, lessonUnit: LessonUnit, dataText: String): EditMessageText {
         var space = ""
         val textForMessage = "Правильных ответов: $properlyLessonAnswer$textForButtonMenu" +
@@ -143,7 +141,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Меню для удаления текстов уроков из бд
     fun createMenuForTextDelete(textForButton: List<String>, callBackData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -176,7 +174,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Сообщение с изображением (шапка)
     fun receiveBillboard(stringChatId: String, url: String): SendPhoto {
         val sendPhoto = SendPhoto()
         sendPhoto.chatId = stringChatId
@@ -193,7 +191,7 @@ class BotMenuFunction : BotMenuInterface {
         return sendPhoto
     }
 
-
+    // Меню тренировки слов
     fun receiveLearnWordMenu(stringChatId: String, messageId: Int, messageText: String): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
@@ -219,7 +217,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Меню добавления текстов
     fun receiveChoseMenu(stringChatId: String, messageId: Int, callBackText: String, messageText: String): EditMessageText{
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
@@ -249,7 +247,7 @@ class BotMenuFunction : BotMenuInterface {
         return editMessageText
     }
 
-
+    // Клавиатура с текстом урока
     private fun createLessonKeyBoard(textForButton: List<String>, calBackData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -314,7 +312,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Меню настроек
     private fun receiveButtonsForSettingMenu(isViewAsChat: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean,
                                              isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): InlineKeyboardMarkup {
         val showHint: String = if(isShowHint) textForOn else textForOff
@@ -374,7 +372,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Меню с одной кнопкой
     fun receiveOneButtonMenu(buttonText: String, buttonData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -389,7 +387,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Меню с двумя кнопками
     fun receiveTwoButtonsMenu(firstButtonText: String, firstData: String, secondButtonText: String, secondData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
@@ -408,7 +406,7 @@ class BotMenuFunction : BotMenuInterface {
         return inlineKeyboardMarkup
     }
 
-
+    // Удалить текст урока из бд
     fun removeLessonTextFromDb(lessonCategory: String, userData: UserData, lessonText: String) {
         when(lessonCategory){
             Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous = lessonText
@@ -423,7 +421,7 @@ class BotMenuFunction : BotMenuInterface {
         }
     }
 
-
+    // Получить текст урока из бд
     fun receiveLessonTextFromDb(lessonCategory: String, userData: UserData): String{
         var userLessonText = ""
         when(lessonCategory){
@@ -440,7 +438,7 @@ class BotMenuFunction : BotMenuInterface {
         return userLessonText
     }
 
-
+    // Добавить текст урока в бд
     fun updateLessonTextInDb(lessonText: String, lessonCategory: String, userData: UserData): UserData{
         when(lessonCategory){
             Lessons.PRESENT_CONTINUOUS.title -> userData.presentContinuous += lessonText

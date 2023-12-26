@@ -1,6 +1,7 @@
 package al.dmitriy.dev.learning.config
 
 import al.dmitriy.dev.learning.service.InputOutputCommand
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.event.ContextRefreshedEvent
 import org.springframework.context.event.EventListener
@@ -18,7 +19,8 @@ class BotInitializer(@Autowired var inputOutputCommand: InputOutputCommand){
             val telegramBotsApi = TelegramBotsApi(DefaultBotSession::class.java)
                     telegramBotsApi.registerBot(inputOutputCommand)
         } catch (e: TelegramApiException){
-            // TODO
+            val logger = LoggerFactory.getLogger("BotInitializer <init>")
+            logger.error(e.message)
         }
 
     }

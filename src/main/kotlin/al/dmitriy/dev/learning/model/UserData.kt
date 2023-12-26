@@ -67,18 +67,5 @@ open class UserData : Cloneable {
     @Column(name = "present_continuous", columnDefinition = "text")
     open var presentContinuous: String = ""
 
-    @Column(name = "pronoun_and_preposition", columnDefinition = "text")
-    open var pronounAndPreposition: String = ""
-
-
-    override fun clone(): Any {
-        val any = Any()
-        try{
-            return super.clone()
-        } catch (e: CloneNotSupportedException){
-            // TODO
-        }
-        return any
-    }
 
 }

@@ -1,13 +1,12 @@
 package al.dmitriy.dev.learning.lesson
-
 import al.dmitriy.dev.learning.apptexts.*
 import al.dmitriy.dev.learning.service.config
 
+// Категории уроков
 enum class Lessons(val pictureUrl: String, val title: String, private val lesson: List<String>) {
-
   PRESENT_SIMPLE("https://disk.yandex.ru/i/nPh5U1bT517ocw", "Present Simple, спряжение глаголов", presentSimple),
-  PRESENT_CONTINUOUS("https://disk.yandex.ru/i/3VDNulKXQmc3Hw", "Present Continuous, состояния", presentContinuous),
-  PASSIVE_VOICE("https://disk.yandex.ru/i/Bw74cS0p2u7jww", "Passive Voice, пассивный залог", passiveVoice),
+  PRESENT_CONTINUOUS("https://disk.yandex.ru/i/NvzxHc-UO7d20w", "Present Continuous, состояния", presentContinuous),
+  PASSIVE_VOICE("https://disk.yandex.ru/i/cYExWmH84l5fcg", "Passive Voice, пассивный залог", passiveVoice),
   PERFECT_TENSE("https://disk.yandex.ru/i/pc8saaKjl42img", "Perfect tense", perfectTense),
   DATE_AND_TIME("https://disk.yandex.ru/i/V_0ZZeTDZ-18AA", "Дата и время", dateAndTime),
   MUCH_MANY_LOT("https://disk.yandex.ru/i/KbHG8BL4NXKygw", "Множества", muchManyLot),
