@@ -2,7 +2,7 @@ package al.dmitriy.dev.learning.apptexts
 
 // Тексты уроков
 val randomWords = listOf("I", "You", "he", "she", "they", "him", "her", "it", "them", "mine", "its", "our", "itself", "myself", "herself", "yourselves", "themselves", "ourselves", "himself", "those", "these",
-    "that", "what", "which", "whose", "who", "whom", "me", "at", "is", "to", "am", "go", "for", "in", "us", "be", "then", "if", "do", "does", "are", "will", "was")
+    "that", "what", "which", "whose", "who", "whom", "me", "at", "is", "to", "am", "go", "for", "in", "us", "be", "then", "if", "yes", "went", "are", "will", "want")
 
 val presentSimple = listOf("Я люблю*I love", "Я не люблю*I do not love", "Я люблю?*do I love", "Я буду любить*I will love", "Я не буду любить*I will not love", "Я буду любить?*will I love", "Я любил*I loved",
     "Я не любил*I did not love", "Я любил?*did I love", " Я иду*I go", "Я не иду*I do not go", "Я иду?*do I go", "Я буду ходить*I will go", "Я не буду ходить*I will not go", "Я буду ходить?*will I go", "Я ходил*I went",
@@ -69,7 +69,7 @@ val passiveVoice = listOf("Ты любим*You are loved", "Ты не любим
     "Вам объяснили это домашнее задание?*has this homework been explained to you", "Задача обсуждалась, когда я вошел в класс*the task was being discussed when I entered the class",
     "Письмо будет написанным к следующему утру*the letter will have been written by the next morning", "Письмо будет написано к на следующий день*the letter will be written the next day",
     "Собака была накормлена вчера*the dog was fed yesterday", "Собака будет накормленной завтра»*the dog will be fed tomorrow", "Собаку кормят прямо в этот момент*the dog is being fed at the moment",
-    "Собаку кормили, когда мы пришли*the dog was being fed when we came", "В 9 вечера собака будет накормлена*at nine o'clock tonight the dog will be being fed", "Собака недавно покормлена*dog has been fed recently",
+    "Собаку кормили, когда мы пришли*the dog was being fed when we came", "В 9 вечера собака будет накормлена*at nine o'clock tonight the dog will be being fed", "Собака недавно покормлена*the dog has been fed recently",
     "Собака была покормлена до того, как я пришёл»*the dog had been fed before I came", "Собака будет покормленной к 9 часам*the dog will have been fed by nine o’clock")
 
 val compareWords = listOf("Ты выше других*you are taller than others", "Эта машина самая быстрая*this car is the fastest", "Анна самая умная в классе*Anna is the cleverest in the class",

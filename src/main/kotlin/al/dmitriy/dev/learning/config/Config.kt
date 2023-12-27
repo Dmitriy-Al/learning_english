@@ -9,12 +9,12 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 class Config {
 
-    final val botUsername: String = "t.me"
-    final val botToken: String = "658"
-    final val adminAccountName: String = "a"
-    final val lessonTextMaxSize: Int = 100000
-    final val userLessonsLimit: Int = 100
-    final val bottomBillboardUrl: String = "https://disk.yandex.ru/i/WrlNU6Z0mWb3Ng"
-    final val topBillboardUrl: String = "https://disk.yandex.ru/i/5UnG_DF_1zCHCA"
+    final val botUsername: String = "t.me" // имя бота
+    final val botToken: String = "658" // токен бота
+    final val adminAccountName: String = "a" // имя учетной записи администратора
+    final val lessonTextMaxSize: Int = 100000 // максимальная длинна текста из уроков других пользователей
+    final val userLessonsLimit: Int = 100 // максимальная количество уроков пользователя
+    final val bottomBillboardUrl: String = "https://disk.yandex.ru/i/WrlNU6Z0mWb3Ng" // изображение "низ" на стартовой странице
+    final val topBillboardUrl: String = "https://disk.yandex.ru/i/5UnG_DF_1zCHCA" // изображение "верх" на стартовой странице (шапка)
 
 }
