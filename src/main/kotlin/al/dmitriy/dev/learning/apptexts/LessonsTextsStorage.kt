@@ -1,7 +1,7 @@
 package al.dmitriy.dev.learning.apptexts
 
 // Тексты уроков
-val randomWords = listOf("I", "You", "he", "she", "they", "him", "her", "it", "them", "mine", "its", "our", "itself", "myself", "herself", "yourselves", "themselves", "ourselves", "himself", "those", "these",
+val randomWords = listOf("I", "You", "he", "she", "they", "him", "her", "it", "them", "mine", "always", "our", "itself", "myself", "herself", "yourselves", "themselves", "ourselves", "himself", "those", "these",
     "that", "what", "which", "whose", "who", "whom", "me", "at", "is", "to", "am", "go", "for", "in", "us", "be", "then", "if", "yes", "went", "are", "will", "want")
 
 val presentSimple = listOf("Я люблю*I love", "Я не люблю*I do not love", "Я люблю?*do I love", "Я буду любить*I will love", "Я не буду любить*I will not love", "Я буду любить?*will I love", "Я любил*I loved",
@@ -89,11 +89,11 @@ val perfectTense = listOf("Я (уже) посмотрел фильм*I have seen
     "Я (к настоящему моменту) писал книгу*I have written a book", "Я (к настоящему моменту) никогда не писал книгу*I have newer written a book", "Я (к настоящему моменту) писал книгу?*have I written a book",
     "Я буду писать книгу*I will have written a book", "Я не буду писать книгу*I won't have written a book", "Я буду писать книгу?*will I have written a book", "Мы услышали*we have heard",
     "Я (до последующих событий) писал книгу*I had written a book", "Я (до последующих событий) не писал книгу*I hadn't written a book", "Я писал книгу? (до последующих событий)*had I written a book",
-    "Мы услышали?*have we heard", "Мы будем слышать*we will have heard", "Мы не будем слышать*we won't heard", "Мы будем слышать?*will we have heard", "Мы слышали (когда-то до)*we had heard",
-    "Мы не слышали (когда-то до)*we didn't have heard", "Мы слышали? (когда-то до)*did we have heard", "Она (уже) читала книгу *she has read a book", "Она не читала книгу (сейчас)*she doesn't have read a book",
+    "Мы услышали? (сейчас)*have we heard", "Мы будем слышать*we will have heard", "Мы не будем слышать*we won't heard", "Мы будем слышать?*will we have heard", "Мы слышали (когда-то до)*we had heard",
+    "Мы не слышали (когда-то до)*we hadn't heard", "Мы слышали? (когда-то до)*had we heard", "Она (уже) читала книгу *she has read a book", "Она не читала книгу (сейчас)*she hasn't have read a book",
     "Она (уже) читала книгу?*has she read a book", "Она будет читать книгу*she will have read a book", "Она не будет читать книгу*she won't have read a book", "Она будет читать книгу?*will she have read a book",
     "Она прочитала книгу (когда-то до)*she had read a book", "Она не прочитала книгу (когда-то до)*she hadn't read a book", "Она прочитала книгу? (когда-то до)*had she read a book",
-    "Ты (уже) учил Английский язык*You have learned English", "Ты не учил Английский язык (сейчас)*You don't have learned English", "Ты учил Английский язык? (уже)*have You learned English",
+    "Ты (уже) учил Английский язык*You have learned English", "Ты не учил Английский язык (сейчас)*You haven't learned English", "Ты учил Английский язык? (уже)*have You learned English",
     "Ты будешь учить Английский язык*You will have learned English", "Ты не будешь учить Английский язык*You won't have learned English", "Ты будешь учить Английский язык?*will You have learned English",
     "Ты выучил Английский язык (когда-то до)*You had learned English", "Ты не выучил Английский язык (когда-то до)*You hadn't learned English", "Ты учил Английский язык? (когда-то до)*had You learned English")
 

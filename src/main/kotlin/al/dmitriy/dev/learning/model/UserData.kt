@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import java.sql.Timestamp
 
 @Entity(name = "user_data_storage")
-open class UserData : Cloneable {
+open class UserData {
 
 
     @Id
