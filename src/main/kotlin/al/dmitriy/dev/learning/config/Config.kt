@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableScheduling
 class Config {
 
-    final val botUsername: String = "t.me/ForEnglishTrainingBot." // имя бота
-    final val botToken: String = "6586869115:AAFh0E1_qSLS4vXPYWgSHHezODrbwEc-Vsg" // токен бота
+    final val botUsername: String = "TestDemoUnicNameBot" // t.me/ForEnglishTrainingBot имя бота
+    final val botToken: String = "5684975537:AAHNI1ulaYG9U0ifSlOet3r6DClVoPWl" // токен бота
     final val adminAccountName: String = "admin" // имя учетной записи администратора
     final val lessonTextMaxSize: Int = 100000 // максимальная длинна текста из уроков других пользователей
     final val userLessonsLimit: Int = 100 // максимальная количество уроков пользователя

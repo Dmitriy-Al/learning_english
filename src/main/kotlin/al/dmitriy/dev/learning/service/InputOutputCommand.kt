@@ -123,7 +123,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
             when (updateMessageText) { // команды
 
                 "/start" -> { // начало работы бота
-                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3, 4)
+                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     viewAsChat[stringChatId] = false
 
                     if (saveHintMessageId[stringChatId] != null) protectedExecute(DeleteMessage().putData(stringChatId, saveHintMessageId[stringChatId]!!))
@@ -167,7 +167,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                 }
 
                 "/register" -> { // зарегистрироваться под именем
-                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3)
+                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3, 4)
                     val user: Optional<UserData> = userDataRepository.findById(longChatId)
                     val forMessageText: String = if (user.isPresent && user.get().userFirstname.isEmpty()) {
                         tempData[stringChatId] = inputUserFirstName
@@ -178,7 +178,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                 }
 
                 "\uD83D\uDCDA Уроки" -> { // список уроков
-                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3, 4)
+                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     if (saveTrainingMessageId[stringChatId] != null) {
                         protectedExecute(DeleteMessage().putData(stringChatId,saveTrainingMessageId[stringChatId]!!))
                     }
@@ -204,7 +204,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                 }
 
                 "Настройки ⚙" -> {
-                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3, 4)
+                    deletePreviousMessage(stringChatId, messageIdMap[stringChatId], 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                     if (saveTrainingMessageId[stringChatId] != null) {
                         protectedExecute(DeleteMessage().putData(stringChatId,saveTrainingMessageId[stringChatId]!!))
                     }
