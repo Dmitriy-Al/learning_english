@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.bots.AbsSender
@@ -30,6 +31,13 @@ fun EditMessageMedia.putData(stringChatId: String, intMessageId: Int?, pictureUr
     this.chatId = stringChatId
     this.messageId = intMessageId
     this.media = InputMediaPhoto(pictureUrl)
+    return this
+}
+
+
+fun SendPhoto.putData(stringChatId: String, pictureUrl: String): SendPhoto {
+    this.chatId = stringChatId
+    this.photo =  InputFile(pictureUrl)
     return this
 }
 

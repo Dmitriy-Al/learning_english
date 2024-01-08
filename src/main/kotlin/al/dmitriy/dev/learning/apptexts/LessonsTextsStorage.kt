@@ -18,7 +18,7 @@ val presentSimple = listOf("Я люблю*I love", "Я не люблю*I do not 
     "Она улыбалась?*did she smile", "Она читает книгу*she reads a book", "Она не читает книгу*she does not read a book", "Она читает книгу?*does she read a book", "Она будет читать книгу*she will read a book",
     "Она не будет читать книгу*she will not read a book", "Она будет читать книгу?*will she read a book", "Она читала книгу*she read a book", "Она не читала книгу*she did not read a book",
     "Она читала книгу?*did she read a book", "Он хочет бежать*he wants to run", "Он не хочет бежать*he doesn't want to run", "Он хочет бежать?*does he want to run", "Он захочет бежать*he will want to run",
-    "Он не захочет бежать*he will not want to run", "Он захочет бежать?*will he want to run?", "Он хотел бежать*he wanted to run", "Он не хотел бежать*he didn't want to run", "Он хотел бежать?*did he want to run",
+    "Он не захочет бежать*he will not want to run", "Он захочет бежать?*will he want to run", "Он хотел бежать*he wanted to run", "Он не хотел бежать*he didn't want to run", "Он хотел бежать?*did he want to run",
     "Они любят выигрывать*they like to win", "Они не любят проигрывать*they don't like to lose", "Они любят выигрывать?*do they like to win", "Они полюбят выигрывать*they will like to win",
     "Они не будут любить проигрывать*they will not like to lose", "Они полюбят выигрывать?*will they like to win", "Они любили выигрывать*they liked to win", "Они не любили проигрывать*they didn't like to lose",
     "Они любили выигрывать?*did they like to win", "Тебе надо идти домой*You need to go home", "Тебе не надо идти домой*You don't need to go home", "Тебе надо идти домой?*do You need to go home",

@@ -34,7 +34,8 @@ class BotMenuFunction : BotMenuInterface {
     }
 
     // Изменённое сообщение с экранными кнопками
-    fun receiveButtonEditMessage(stringChatId: String, messageId: Int, messageText: String, callBackData: String, buttonTexts: List<String>): EditMessageText {
+    fun receiveButtonEditMessage(stringChatId: String, messageId: Int,
+                                 messageText: String, callBackData: String, buttonTexts: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
         editMessageText.replyMarkup = createDataButtonMenu(buttonTexts, callBackData)
@@ -42,24 +43,25 @@ class BotMenuFunction : BotMenuInterface {
     }
 
     // Меню пользовательских настроек
-    fun receiveSettingMenu(stringChatId: String, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean,
+    fun receiveSettingMenu(stringChatId: String, messageText: String, isOnlyUsersText: Boolean,
                            isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): SendMessage {
         val sendMessage = SendMessage(stringChatId, messageText)
-        sendMessage.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
+        sendMessage.replyMarkup = receiveButtonsForSettingMenu(isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
         return sendMessage
     }
 
     // Меню пользовательских настроек
-    fun receiveSettingMenu(stringChatId: String, messageId: Int, messageText: String, isSimpleText: Boolean, isOnlyUsersText: Boolean,
+    fun receiveSettingMenu(stringChatId: String, messageId: Int, messageText: String, isOnlyUsersText: Boolean,
                            isShowHint: Boolean, isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
-        editMessageText.replyMarkup = receiveButtonsForSettingMenu(isSimpleText, isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
+        editMessageText.replyMarkup = receiveButtonsForSettingMenu(isOnlyUsersText, isShowHint, isSendTrainingMessage, sinceTime, untilTime)
         return editMessageText
     }
 
     // Список уроков других пользователей
-    fun receiveCategoryMenu(stringChatId: String, messageId: Int, callbackData: String, messageText: String, categories: List<String>): EditMessageText {
+    fun receiveCategoryMenu(stringChatId: String, messageId: Int, callbackData: String,
+                            messageText: String, categories: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, messageId, messageText)
         editMessageText.replyMarkup = createDataButtonMenu(categories, callbackData)
@@ -67,7 +69,8 @@ class BotMenuFunction : BotMenuInterface {
     }
 
     // Меню администратора
-    fun receiveInfoMenuForAdmin(stringChatId: String, intMessageId: Int, messageText: String, categories: List<String>): EditMessageText {
+    fun receiveInfoMenuForAdmin(stringChatId: String, intMessageId: Int,
+                                messageText: String, categories: List<String>): EditMessageText {
         val editMessageText = EditMessageText()
         editMessageText.putData(stringChatId, intMessageId, messageText)
         editMessageText.replyMarkup = createButtonMenu(categories)
@@ -107,7 +110,8 @@ class BotMenuFunction : BotMenuInterface {
     }
 
     // Сообщение и экранные кнопки с текстом урока
-    fun createLessonButtonMenu(stringChatId: String, messageId: Int, properlyLessonAnswer: Int, lessonUnit: LessonUnit, dataText: String): EditMessageText {
+    fun createLessonButtonMenu(stringChatId: String, messageId: Int, properlyLessonAnswer: Int,
+                               lessonUnit: LessonUnit, dataText: String): EditMessageText {
         var space = ""
         val textForMessage = "Правильных ответов: $properlyLessonAnswer$textForButtonMenu" +
                 lessonUnit.russianText + "\n\n✏ " + lessonUnit.inputText
@@ -134,7 +138,8 @@ class BotMenuFunction : BotMenuInterface {
                 }
             }
         }
-        val dataString = if (lessonUnit.inputText.split(" ").size == lessonUnit.englishText.split(" ").size) callData_endOfTxt else dataText  //
+        val dataString = if (lessonUnit.inputText.split(" ").size ==
+            lessonUnit.englishText.split(" ").size) callData_endOfTxt else dataText  //
 
         val inlineKeyboardMarkup: InlineKeyboardMarkup = createLessonKeyBoard(buttonText, dataString)
         editMessageText.replyMarkup = inlineKeyboardMarkup
@@ -313,10 +318,9 @@ class BotMenuFunction : BotMenuInterface {
     }
 
     // Меню настроек
-    private fun receiveButtonsForSettingMenu(isViewAsChat: Boolean, isOnlyUsersText: Boolean, isShowHint: Boolean,
-                                             isSendTrainingMessage: Boolean, sinceTime: Int, untilTime: Int): InlineKeyboardMarkup {
+    private fun receiveButtonsForSettingMenu(isOnlyUsersText: Boolean, isShowHint: Boolean, isSendTrainingMessage: Boolean,
+                                             sinceTime: Int, untilTime: Int): InlineKeyboardMarkup {
         val showHint: String = if(isShowHint) textForOn else textForOff
-        val viewAsChat: String = if(isViewAsChat) textForOn else textForOff
         val usersText: String = if(isOnlyUsersText) textForOn else textForOff
         val trainingMessage: String = if(isSendTrainingMessage) textForOn else textForOff
 
@@ -326,46 +330,40 @@ class BotMenuFunction : BotMenuInterface {
         val secondRowInlineButton = ArrayList<InlineKeyboardButton>()
         val thirdRowInlineButton = ArrayList<InlineKeyboardButton>()
         val fourthRowInlineButton = ArrayList<InlineKeyboardButton>()
-        val fifthRowInlineButton = ArrayList<InlineKeyboardButton>()
 
         val showHintButton = InlineKeyboardButton()
         showHintButton.putData("Показывать таблицы и подсказки:  $showHint", callData_showHint)
         firstRowInlineButton.add(showHintButton)
 
-        val simpleTextButton = InlineKeyboardButton()
-        simpleTextButton.putData("Отображение в формате чата:  $viewAsChat", callData_asChat)
-        secondRowInlineButton.add(simpleTextButton)
-
         val userTextButton = InlineKeyboardButton()
         userTextButton.putData("Только свои тексты уроков:  $usersText", callData_userTxt)
-        thirdRowInlineButton.add(userTextButton)
+            secondRowInlineButton.add(userTextButton)
 
         val trainingButton = InlineKeyboardButton()
         trainingButton.putData("Сообщения с тренировками:  $trainingMessage", callData_trainMessage)
-        fourthRowInlineButton.add(trainingButton)
+        thirdRowInlineButton.add(trainingButton)
 
         rowsInline.add(firstRowInlineButton)
         rowsInline.add(secondRowInlineButton)
         rowsInline.add(thirdRowInlineButton)
-        rowsInline.add(fourthRowInlineButton)
 
         if(isSendTrainingMessage) {
             val sinceTimeDownButton = InlineKeyboardButton()
             sinceTimeDownButton.putData("⏪ с $sinceTime", callData_setTime + "SinceDown")
-            fifthRowInlineButton.add(sinceTimeDownButton)
+            fourthRowInlineButton.add(sinceTimeDownButton)
 
             val sinceTimeUpButton = InlineKeyboardButton()
             sinceTimeUpButton.putData("⏩", callData_setTime + "SinceUp")
-            fifthRowInlineButton.add(sinceTimeUpButton)
+            fourthRowInlineButton.add(sinceTimeUpButton)
 
             val untilTimeDownButton = InlineKeyboardButton()
             untilTimeDownButton.putData("⏪", callData_setTime + "UntilDown")
-            fifthRowInlineButton.add(untilTimeDownButton)
+            fourthRowInlineButton.add(untilTimeDownButton)
 
             val untilTimeUpButton = InlineKeyboardButton()
             untilTimeUpButton.putData("до $untilTime ⏩", callData_setTime + "UntilUp")
-            fifthRowInlineButton.add(untilTimeUpButton)
-            rowsInline.add(fifthRowInlineButton)
+            fourthRowInlineButton.add(untilTimeUpButton)
+            rowsInline.add(fourthRowInlineButton)
         }
 
         inlineKeyboardMarkup.keyboard = rowsInline
@@ -388,7 +386,8 @@ class BotMenuFunction : BotMenuInterface {
     }
 
     // Меню с двумя кнопками
-    fun receiveTwoButtonsMenu(firstButtonText: String, firstData: String, secondButtonText: String, secondData: String): InlineKeyboardMarkup {
+    fun receiveTwoButtonsMenu(firstButtonText: String, firstData: String,
+                              secondButtonText: String, secondData: String): InlineKeyboardMarkup {
         val inlineKeyboardMarkup = InlineKeyboardMarkup()
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
         val firstRowInlineButton = ArrayList<InlineKeyboardButton>()
