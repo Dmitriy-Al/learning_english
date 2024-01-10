@@ -52,7 +52,7 @@ val muchManyLot = listOf("Много столов*many tables", "Много ло
     "Много столов*many tables", "У них мало денег*they have little money", "У них мало монет*they have few coins", "Они имеют много денег*they have got much money",
     "У них много монет*they have many coins", "Многие из них*a lot of them", "Она ему очень нравится*he likes her a lot", "Его фильмы получили множество призов*his films have won lots of prizes",
     "Много сахара*a lot of sugar", "Он не ест много мяса*he doesn't eat much meat", "Она ест много фруктов*She eats much fruits", "В городе немного старых зданий*there are a few old buildings in the city",
-    "В музее было мало людей*there were few people in the museum", "У него мало свободного времени*he has little free time", "Прошлой зимой у нас было мало снега*we had little snow last winter",
+    "В музее было мало людей*there were few people at the museum", "У него мало свободного времени*he has little free time", "Прошлой зимой у нас было мало снега*we had little snow last winter",
     "У меня так много новостей для тебя*I have got so much news to tell you", "Я хочу задать тебе так много вопросов*there are so many things I want to ask you", "Много сахара*much sugar",
     "С тех пор утекло много воды*much of water has flown away since then")
 
@@ -69,10 +69,10 @@ val passiveVoice = listOf("Ты любим*You are loved", "Ты не любим
     "Вам объяснили это домашнее задание?*has this homework been explained to you", "Задача обсуждалась, когда я вошел в класс*the task was being discussed when I entered the class",
     "Письмо будет написанным к следующему утру*the letter will have been written by the next morning", "Письмо будет написано к на следующий день*the letter will be written the next day",
     "Собака была накормлена вчера*the dog was fed yesterday", "Собака будет накормленной завтра»*the dog will be fed tomorrow", "Собаку кормят прямо в этот момент*the dog is being fed at the moment",
-    "Собаку кормили, когда мы пришли*the dog was being fed when we came", "В 9 вечера собака будет накормлена*at nine o'clock tonight the dog will be being fed", "Собака недавно покормлена*the dog has been fed recently",
+    "Собаку кормили, когда мы пришли*the dog was being fed when we come", "В 9 вечера собака будет накормлена*at nine o'clock tonight the dog will be being fed", "Собака недавно покормлена*the dog is has been fed recently",
     "Собака была покормлена до того, как я пришёл»*the dog had been fed before I came", "Собака будет покормленной к 9 часам*the dog will have been fed by nine o’clock")
 
-val compareWords = listOf("Ты выше других*you are taller than others", "Эта машина самая быстрая*this car is the fastest", "Анна самая умная в классе*Anna is the cleverest in the class",
+val compareWords = listOf("Ты выше других*You are taller than others", "Эта машина самая быстрая*this car is the fastest", "Анна самая умная в классе*Anna is the cleverest in the class",
     "Моя машина быстрее твоей*My car is faster than your", "Эта дорога была самой короткой*this road was the shortest", "Сегодня она выглядит лучше, чем вчера*today she looks better than yesterday",
     "Вчера она выглядела хуже, чем сегодня*yesterday she looked worse than today", "Он был его лучшим другом*he was the best his friend", "Эта задача будет самой сложной*this task will be the most difficult",
     "Этот цветок удивительнее других*this flower is more wonderful than others", "Эта самая добрая собака в мире*this is the kindest dog in the world",
@@ -80,22 +80,22 @@ val compareWords = listOf("Ты выше других*you are taller than others
     "Фильм был самым скучным*the movie was the most boring", "Меркурий не больше Земли*Mercury isn't bigger than Earth", "Вчера был самый жаркий день года*yesterday was the hottest day of the year",
     "Один из самых милых людей, которых я знаю*one of the nicest people I know", "Ты старше меня*You are older than me")
 
-val perfectTense = listOf("Я (уже) посмотрел фильм*I have seen the movie", "Я (когда-то в прошлом) смотрел этот фильм*I had seen this movie", "Я увижу этот фильм к вечеру*I will have seen this movie by evening",
-    "У него (уже) была собака*he has had a dog", "У него (когда-то в прошлом) была собака*he had had a dog", "У него будет собака (он уже будет владельцем собаки)*he will have had a dog",
+val perfectTense = listOf("Я (к настоящему моменту) посмотрел фильм*I have seen the movie", "Я (когда-то в прошлом) смотрел этот фильм*I had seen this movie", "Я увижу этот фильм к вечеру*I will have seen this movie by evening",
+    "У него (к настоящему моменту) была собака*he has had a dog", "У него (когда-то в прошлом) была собака*he had had a dog", "У него будет собака*he will have had a dog",
     "Ты находишься здесь год*You have been here for a year", "Ты находился здесь год*You had been here for a year", "Ты будешь находиться здесь год*You will have been here for a year", "Он - сбежавший*he has escaped",
     "Он сбежал раньше, чем они нашли его*he had escaped before they found him", "Он убежит (будет сбежавшим) к полуночи*he will have escaped by midnight", "Они (когда-то в прошлом) работали*they had worked",
     "Они работали (сейчас)*they have worked", "Они отработают*they will have worked", "Я только завершил мою работу*I have just finished my work", "Я закончил мою работу вчера*I had finished my work yesterday",
     "Я закончу работу (моя работа будет законченной) завтра к 5 часам*I will have finished my work tomorrow by 5 o’clock", "Они уже приехали*they have arrived already", "Мы не услышали*we haven't heard",
     "Я (к настоящему моменту) писал книгу*I have written a book", "Я (к настоящему моменту) никогда не писал книгу*I have newer written a book", "Я (к настоящему моменту) писал книгу?*have I written a book",
     "Я буду писать книгу*I will have written a book", "Я не буду писать книгу*I won't have written a book", "Я буду писать книгу?*will I have written a book", "Мы услышали*we have heard",
-    "Я (до последующих событий) писал книгу*I had written a book", "Я (до последующих событий) не писал книгу*I hadn't written a book", "Я писал книгу? (до последующих событий)*had I written a book",
-    "Мы услышали? (сейчас)*have we heard", "Мы будем слышать*we will have heard", "Мы не будем слышать*we won't heard", "Мы будем слышать?*will we have heard", "Мы слышали (когда-то до)*we had heard",
-    "Мы не слышали (когда-то до)*we hadn't heard", "Мы слышали? (когда-то до)*had we heard", "Она (уже) читала книгу *she has read a book", "Она не читала книгу (сейчас)*she hasn't have read a book",
-    "Она (уже) читала книгу?*has she read a book", "Она будет читать книгу*she will have read a book", "Она не будет читать книгу*she won't have read a book", "Она будет читать книгу?*will she have read a book",
-    "Она прочитала книгу (когда-то до)*she had read a book", "Она не прочитала книгу (когда-то до)*she hadn't read a book", "Она прочитала книгу? (когда-то до)*had she read a book",
-    "Ты (уже) учил Английский язык*You have learned English", "Ты не учил Английский язык (сейчас)*You haven't learned English", "Ты учил Английский язык? (уже)*have You learned English",
+    "Я (когда-то в прошлом) писал книгу*I had written a book", "Я (когда-то в прошлом) не писал книгу*I hadn't written a book", "Я писал книгу? (когда-то в прошлом)*had I written a book",
+    "Мы услышали? (сейчас)*have we heard", "Мы будем слышать*we will have heard", "Мы не будем слышать*we won't heard", "Мы будем слышать?*will we have heard", "Мы слышали (когда-то в прошлом)*we had heard",
+    "Мы не слышали (когда-то в прошлом)*we hadn't heard", "Мы слышали? (когда-то в прошлом)*had we heard", "Она (сейчас) читала книгу *she has read a book", "Она не читала книгу (сейчас)*she hasn't have read a book",
+    "Она (сейчас) читала книгу?*has she read a book", "Она будет читать книгу*she will have read a book", "Она не будет читать книгу*she won't have read a book", "Она будет читать книгу?*will she have read a book",
+    "Она прочитала книгу (когда-то в прошлом)*she had read a book", "Она не прочитала книгу (когда-то в прошлом)*she hadn't read a book", "Она прочитала книгу? (когда-то в прошлом)*had she read a book",
+    "Ты (сейчас) учил Английский язык*You have learned English", "Ты не учил Английский язык (сейчас)*You haven't learned English", "Ты учил Английский язык? (сейчас)*have You learned English",
     "Ты будешь учить Английский язык*You will have learned English", "Ты не будешь учить Английский язык*You won't have learned English", "Ты будешь учить Английский язык?*will You have learned English",
-    "Ты выучил Английский язык (когда-то до)*You had learned English", "Ты не выучил Английский язык (когда-то до)*You hadn't learned English", "Ты учил Английский язык? (когда-то до)*had You learned English")
+    "Ты выучил Английский язык (когда-то в прошлом)*You had learned English", "Ты не выучил Английский язык (когда-то в прошлом)*You hadn't learned English", "Ты учил Английский язык? (когда-то в прошлом)*had You learned English")
 
 val presentContinuous = listOf("Лондон - столица Великобритании*London is the capital of Great Britain", "Манчестер - не столица Великобритании*Manchester is not the capital of Great Britain",
     "Лондон - столица Великобритании?*is London the capital of Great Britain", "Лондон будет столицей Великобритании*London will be the capital of Great Britain",
@@ -110,9 +110,9 @@ val presentContinuous = listOf("Лондон - столица Великобри
     "Он будет петь песню*he will be singing a song", "Он не будет петь песню*he won't be singing a song", "Он будет петь песню?*will he be singing a song", "Он пел песню*he was singing a song",
     "Он не пел песню*he wasn't singing a song", "Он пел песню?*was he singing a song", "Мы счастливы*we are happy", "Мы не счастливы*we are not happy", "Мы счастливы?*are we happy", "Мы будем счастливы*we will be happy",
     "Мы не будем счастливы*we will not be happy", "Мы будем счастливы?*will we be happy", "Мы были счастливы*we were happy",  "Мы не были счастливы*we were not happy", "Мы были счастливы?*were we happy",
-    "Они улыбаются тебе*they are smiling at you", "Они не улыбаются тебе*they aren't smiling at you", "Они улыбаются тебе?*are they smiling at you", "Они будут улыбаться тебе*they will be smiling at you",
-    "Они не будут улыбаться тебе*they won't be smiling at you", "Они будут улыбаться тебе?*will they be smiling at you", "Они улыбались тебе*they were smiling at you", "Они не улыбались тебе*they weren't smiling at you",
-    "Они улыбались тебе?*were they smiling at you", "Она прекрасна*she is beautiful", "Она не прекрасна*she isn't beautiful", "Она прекрасна?*is she beautiful", "Она будет прекрасна*she will be beautiful",
+    "Они улыбаются тебе*they are smiling at You", "Они не улыбаются тебе*they aren't smiling at You", "Они улыбаются тебе?*are they smiling at You", "Они будут улыбаться тебе*they will be smiling at You",
+    "Они не будут улыбаться тебе*they won't be smiling at You", "Они будут улыбаться тебе?*will they be smiling at you", "Они улыбались тебе*they were smiling at You", "Они не улыбались тебе*they weren't smiling at You",
+    "Они улыбались тебе?*were they smiling at You", "Она прекрасна*she is beautiful", "Она не прекрасна*she isn't beautiful", "Она прекрасна?*is she beautiful", "Она будет прекрасна*she will be beautiful",
     "Она не будет прекрасна*she won't be beautiful", "Она будет прекрасна?*will she be beautiful", "Она была прекрасна*she was beautiful", "Она не была прекрасна*she wasn't beautiful", "Она была прекрасна?*was she beautiful",
     "Ты тренируешься*You are training", "Ты не тренируешься*You aren't training", "Ты тренируешься?*are You training", "Ты будешь тренироваться*You will be training", "Ты не будешь тренироваться*You won't be training",
     "Ты будешь тренироваться?*will You be training", "Ты тренировался*You were training", "Ты не тренировался*You weren't training", "Ты тренировался?*were You training", "Я сплю сейчас*I am sleeping now",

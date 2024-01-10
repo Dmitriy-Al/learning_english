@@ -7,7 +7,6 @@ import al.dmitriy.dev.learning.model.UserData
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
-import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
@@ -181,10 +180,7 @@ class BotMenuFunction : BotMenuInterface {
 
     // Сообщение с изображением (шапка)
     fun receiveBillboard(stringChatId: String, url: String): SendPhoto {
-        val sendPhoto = SendPhoto()
-        sendPhoto.chatId = stringChatId
-        sendPhoto.photo = InputFile(url)
-
+        val sendPhoto = SendPhoto().putData(stringChatId, url)
         val replyKeyboardMarkup = ReplyKeyboardMarkup()
         replyKeyboardMarkup.resizeKeyboard = true
         val firstRow = KeyboardRow()
@@ -376,10 +372,9 @@ class BotMenuFunction : BotMenuInterface {
         val rowsInline = ArrayList<List<InlineKeyboardButton>>()
 
         val rowInlineButton = ArrayList<InlineKeyboardButton>()
-        val backButton = InlineKeyboardButton()
-        backButton.text = buttonText
-        backButton.callbackData = buttonData
-        rowInlineButton.add(backButton)
+        val button = InlineKeyboardButton()
+        button.putData(buttonText, buttonData)
+        rowInlineButton.add(button)
         rowsInline.add(rowInlineButton)
         inlineKeyboardMarkup.keyboard = rowsInline
         return inlineKeyboardMarkup

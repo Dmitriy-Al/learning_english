@@ -8,7 +8,6 @@ import java.sql.Timestamp
 @Entity(name = "user_data_storage")
 open class UserData {
 
-
     @Id
     @Column(name = "chat_id")
     open var chatId: Long = 0
@@ -26,16 +25,16 @@ open class UserData {
     open var untilTime: Int = 20
 
     @Column(name = "show_hint_message")
-    open var isShowHint: Boolean =  true
+    open var isShowHint: Boolean = true
 
     @Column(name = "view_as_chat")
-    open var isViewAsChat: Boolean =  false
+    open var isViewAsChat: Boolean = false
 
     @Column(name = "only_users_texts")
-    open var isUsersTexts: Boolean =  false
+    open var isUsersTexts: Boolean = false
 
     @Column(name = "send_training_message")
-    open var isSendTrainingMessage: Boolean =  false
+    open var isSendTrainingMessage: Boolean = true
 
     @Column(name = "user_register_date_time")
     open var userRegisterDateTime: Timestamp = Timestamp(System.currentTimeMillis())
@@ -66,6 +65,5 @@ open class UserData {
 
     @Column(name = "present_continuous", columnDefinition = "text")
     open var presentContinuous: String = ""
-
 
 }

@@ -56,6 +56,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
     private var messageForBillboard = "" // сообщение для верхнего изображения (шапки)
     private var urlForBottomBillboard = "" // линк для замены изображения с таблицами/подсказками
     private val localDateTime = LocalDateTime.now()
+
     // Ключами к Map являются ChatId пользователей, т.о. каждый из пользователей имеет доступ к индивидуальным уроками/ресурсами
     private val tempData = HashMap<String, String>() // если в Map добавляется строка-константа, Update-сообщение запускает определённую функцию
     private val dataUnitMap = HashMap<String, DataUnit>() // в Map помещается объект с тренировкой
@@ -77,8 +78,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
     private final val inputEnText = "INPUT_EN_TEXT"
     private final val inputTrainingText = "INPUT_REPEAT_TEXT"
     private final val inputTopBillboardUrl = "TOP_BILLBOARD_URL"
-    private final val inputBottomBillboardUrl = "LOW_BILLBOARD_URL"
     private final val inputUserFirstName = "SAVE_USER_FIRST_NAME"
+    private final val inputBottomBillboardUrl = "LOW_BILLBOARD_URL"
     private final val inputMessageForBillboard = "MESSAGE_FOR_BILLBOARD"
     private final val inputMessageForAllUsers = "MESSAGE_FOR_ALL_USERS"
 
@@ -122,10 +123,9 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
 
                 "/mydata" -> { // данные пользователя
                     val user: Optional<UserData> = userDataRepository.findById(longChatId)
-                    val forMessageText: String =
-                        if (user.isPresent) "\nusername пользователя:  " + user.get().username +
-                                "\nchat id:  " + user.get().chatId + "\nдата и время регистрации:  " + user.get().userRegisterDateTime +
-                                "\n" + user.get().userFirstname else textForUnregisterUser
+                    val forMessageText: String = if (user.isPresent) "\nusername пользователя:  " + user.get().username +
+                                "\nchat id:  " + user.get().chatId + "\nдата и время регистрации:  " +
+                            user.get().userRegisterDateTime + "\n" + user.get().userFirstname else textForUnregisterUser
                     protectedExecute(SendMessage(stringChatId, forMessageText))
                 }
 
@@ -157,7 +157,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         protectedExecute(DeleteMessage().putData(stringChatId,saveTrainingMessageId[stringChatId]!!))
                     }
 
-                    val userData: UserData = setUserDataInDB(longChatId, update.message.chat.userName)
+                    val username: String = update.message.chat.userName ?: "unnamed"
+                    val userData: UserData = setUserDataInDB(longChatId, username)
                     val url: String = urlForBottomBillboard.ifEmpty { config.bottomBillboardUrl }
                     val hintMessage: SendPhoto = SendPhoto().putData(stringChatId, url)
                     saveHintMessageId[stringChatId] = protectedExecute(hintMessage)
@@ -183,7 +184,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         protectedExecute(DeleteMessage().putData(stringChatId,saveTrainingMessageId[stringChatId]!!))
                     }
 
-                    val userData: UserData = setUserDataInDB(longChatId, update.message.chat.userName)
+                    val username: String = update.message.chat.userName ?: "unnamed"
+                    val userData: UserData = setUserDataInDB(longChatId, username)
                     val url: String = urlForBottomBillboard.ifEmpty { config.bottomBillboardUrl }
                     val hintMessage: SendPhoto = SendPhoto().putData(stringChatId, url)
                     saveHintMessageId[stringChatId] = protectedExecute(hintMessage)
@@ -513,7 +515,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
 
-                  if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId, saveHintMessageId[stringChatId], Lessons.PRESENT_SIMPLE.pictureUrl))
+                  if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                      saveHintMessageId[stringChatId], Lessons.PRESENT_SIMPLE.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.PRESENT_CONTINUOUS.title) -> {
@@ -524,7 +527,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
 
-                   if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId], Lessons.PRESENT_CONTINUOUS.pictureUrl))
+                   if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                       saveHintMessageId[stringChatId], Lessons.PRESENT_CONTINUOUS.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.PASSIVE_VOICE.title) -> {
@@ -535,7 +539,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
 
-                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId], Lessons.PASSIVE_VOICE.pictureUrl))
+                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId], Lessons.PASSIVE_VOICE.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.MUCH_MANY_LOT.title) -> {
@@ -545,7 +550,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                     val editMessageText: EditMessageText = botMenuFunction.createLessonButtonMenu(stringChatId, intMessageId,
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
-                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId],Lessons.MUCH_MANY_LOT.pictureUrl))
+                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId],Lessons.MUCH_MANY_LOT.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.PERFECT_TENSE.title) -> {
@@ -556,7 +562,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
 
-                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId], Lessons.PERFECT_TENSE.pictureUrl))
+                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId], Lessons.PERFECT_TENSE.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.DATE_AND_TIME.title) -> {
@@ -568,7 +575,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
 
-                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId], Lessons.DATE_AND_TIME.pictureUrl))
+                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId], Lessons.DATE_AND_TIME.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.COMPARE_WORDS.title) -> {
@@ -580,7 +588,8 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
 
-                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId], Lessons.COMPARE_WORDS.pictureUrl))
+                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId], Lessons.COMPARE_WORDS.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.VARIOUS_WORDS.title) -> {
@@ -590,14 +599,16 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                     val editMessageText: EditMessageText = botMenuFunction.createLessonButtonMenu(stringChatId, intMessageId,
                         properlyLessonAnswer[stringChatId]!!, lessonUnitMap[stringChatId]!!, callData_stepOne)
                     protectedExecute(editMessageText)
-                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId, saveHintMessageId[stringChatId],Lessons.VARIOUS_WORDS.pictureUrl))
+                    if (user.isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId],Lessons.VARIOUS_WORDS.pictureUrl))
                 }
 
                 callBackData.contains(Lessons.LEARN_WORDS.title) -> {
                     cashLessonCategory[stringChatId] = Lessons.LEARN_WORDS.title
                     val editMessageText: EditMessageText =botMenuFunction.receiveLearnWordMenu(stringChatId, intMessageId, textForAddWords)
                     protectedExecute(editMessageText)
-                    if (userDataRepository.findById(longChatId).get().isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,saveHintMessageId[stringChatId], Lessons.LEARN_WORDS.pictureUrl))
+                    if (userDataRepository.findById(longChatId).get().isShowHint) protectedExecute(EditMessageMedia().putData(stringChatId,
+                        saveHintMessageId[stringChatId], Lessons.LEARN_WORDS.pictureUrl))
                 }
 
                 callBackData.contains("ㅤ") -> { // callBackData содержит пустой char (не space(!) - обработка нажатия кнопки экранной клавиатуры без текста)
@@ -774,7 +785,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                 protectedExecute(DeleteMessage().putData(data.chatId.toString(), saveTrainingMessageId[data.chatId.toString()]!!))
             }
 
-            val random: Int = (0..3).random()
+            val random: Int = (0..3).random() // отправка сообщения с тренировкой в случайное время
 
             if (data.wordsForLearning.isNotEmpty() && data.isSendTrainingMessage &&
                 currentHour in data.sinceTime until data.untilTime && random == 1) {
@@ -784,7 +795,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                 val lesson: String = data.wordsForLearning
                 val wordsCount: Int = lesson.split("#").size
 
-                val word: String = when (wordsCount) {
+                val word: String = when (wordsCount) { // в зависимости от количества слов на изучении изменяется текст сообщения
                     1, 21, 31, 41, 51, 61, 71, 81, 91 -> "слово"
                     in 2..4, in 22..24, in 32..34,
                     in 42..44, in 52..54, in 62..64,
@@ -792,9 +803,7 @@ class InputOutputCommand(@Autowired val userDataRepository: UserDataDao) :
                     else -> "слов"
                 }
 
-                val sendMessage = SendMessage()
-                sendMessage.setChatId(data.chatId)
-                sendMessage.text = "\uD83D\uDD14 У вас на изучении $wordsCount $word, проведём тренировку?"
+                val sendMessage = SendMessage(data.chatId.toString(), "\uD83D\uDD14 У вас на изучении $wordsCount $word, проведём тренировку?")
                 sendMessage.replyMarkup = botMenuFunction.receiveTwoButtonsMenu("Да", callData_Training,
                     "Не сейчас", callData_cancel)
                 saveTrainingMessageId[data.chatId.toString()] = protectedExecute(sendMessage)
